@@ -69,11 +69,11 @@ public class Config {
 		return maxRetryWhenServerError;
 	}
 	
-	@JsonProperty(value = "DelayMsBetweenApiRequest")
-	private long delayMsBetweenApiRequest;
+	@JsonProperty(value = "DelayMsBetweenApiRequestRetry")
+	private long delayMsBetweenApiRequestRetry;
 
-	public long getDelayMsBetweenApiRequest() {
-		return delayMsBetweenApiRequest;
+	public long getDelayMsBetweenApiRequestRetry() {
+		return delayMsBetweenApiRequestRetry;
 	}
 	
 	@JsonProperty(value = "DefaultLongitude")

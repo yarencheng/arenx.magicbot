@@ -88,19 +88,19 @@ public class Main {
 		go = login();
 		go.setLocation(latitude, longitude, altitude);
 
-		sleep(Config.instance.getDelayMsBetweenApiRequest());
+		sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 		refreshPlayerData();
 		showPlayData();
 		
-		sleep(Config.instance.getDelayMsBetweenApiRequest());
+		sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 		refreshStats();
 		showStatsData();
 
-		sleep(Config.instance.getDelayMsBetweenApiRequest());
+		sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 		refreshInventories();
 		showInventories();
 
-		sleep(Config.instance.getDelayMsBetweenApiRequest());
+		sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 		refreshMapObjects();
 		showMapObjects();
 		
@@ -129,7 +129,7 @@ public class Main {
 					logger.debug("[Moving] try loot [{}]", name);
 				}
 				
-				sleep(Config.instance.getDelayMsBetweenApiRequest());
+				sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 				PokestopLootResult result = loot(oldTargetStop);
 				showPokestopLootResult(result);
 				
@@ -143,17 +143,17 @@ public class Main {
 				if (result.getResult() == FortSearchResponse.Result.INVENTORY_FULL) {
 					logger.info("[LootResult] bag is full");
 					
-					sleep(Config.instance.getDelayMsBetweenApiRequest());
+					sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 					refreshInventories();
 					showInventories();
 					
-					sleep(Config.instance.getDelayMsBetweenApiRequest());
+					sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 					removeBackBagItems();
 					showInventories();
 				}
 				
 				round = 0;
-				sleep(Config.instance.getDelayMsBetweenApiRequest());
+				sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 				refreshMapObjects();
 				
 				continue;
@@ -376,7 +376,7 @@ public class Main {
 						logger.error("Failed to recycle remove:{} count:{} {}", e.getKey(), e.getValue(), r);
 						break;
 					}
-					sleep(Config.instance.getDelayMsBetweenApiRequest());
+					sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 					break;
 				} catch (Exception e1) {
 					logger.warn("Faile to remove item:{} count: {}; retry {}/{}", e.getKey(), e.getValue(), retry,
@@ -580,7 +580,7 @@ public class Main {
 						logger.warn("Failed to get pokestop detail id[{}]", stop.getId());
 					}
 
-					sleep(Config.instance.getDelayMsBetweenApiRequest());
+					sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 				});
 
 	}

@@ -135,7 +135,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>arenx.magicbot.Main</mainClass>
+							<mainClass>arenx.magicbot.Main2</mainClass>
 						</manifest>
 						<manifestEntries>
 							<Class-Path>.</Class-Path>

@@ -1,7 +1,7 @@
 {
   "AuthType" : "GOOGLE", // GOOGLE | PTC
   "MaxRetryWhenServerError" : 5,
-  "DelayMsBetweenApiRequest" : 1000,
+  "DelayMsBetweenApiRequestRetry" : 5000,
   "DefaultLatitude" : 25.159910,
   "DefaultLongitude" : 121.456276,
   "DefaultAltitude" : 18,
@@ -9,7 +9,7 @@
   "BackBag" : {
 	"MaxReviveToKeep" : 10,
 	"MaxPotionToKeep" : 10,
-	"MaxBallToKeep": 150,
-	"MaxBerryToKeep": 150	
+	"MaxBallToKeep": 120,
+	"MaxBerryToKeep": 120	
   }
 }
