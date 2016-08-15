@@ -22,6 +22,7 @@ public class Main2 {
 	private Strategy infoStrategy;
 	private Strategy pokemonEncounterStrategy;
 	private Strategy transferStrategy;
+	private Strategy levelUpStrategy;
 
 	public static void main(String[] argv) {
 		try {
@@ -48,6 +49,7 @@ public class Main2 {
 		infoStrategy = new SimpleInformationStrategy(go);
 		pokemonEncounterStrategy = new SimplePokemonEncounterStrategy(go);
 		transferStrategy = new SimplePokemonTransferStrategy(go);
+		levelUpStrategy = new SimpleLevelUpStrategy(go);
 		
 		((SimpleLootPokestopStrategy)lootStrategy).setCleanBackbagStrategy(cleanBackbagStrategy);
 		((SimplePokemonEncounterStrategy)pokemonEncounterStrategy).setInformationStrategy(infoStrategy);
@@ -55,7 +57,9 @@ public class Main2 {
 		((SimpleInformationStrategy)infoStrategy).showAll();
 		
 		while(true){
+			levelUpStrategy.execute();
 			transferStrategy.execute();
+			
 			walkingStrategy.execute();
 			pokemonEncounterStrategy.execute();
 			lootStrategy.execute();

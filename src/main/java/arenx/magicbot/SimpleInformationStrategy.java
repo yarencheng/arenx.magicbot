@@ -27,6 +27,7 @@ import com.pokegoapi.util.PokeNames;
 
 import POGOProtos.Data.PlayerDataOuterClass.PlayerData;
 import POGOProtos.Enums.PokemonIdOuterClass.PokemonId;
+import POGOProtos.Inventory.Item.ItemAwardOuterClass.ItemAward;
 import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 import POGOProtos.Map.Pokemon.MapPokemonOuterClass.MapPokemon;
 
@@ -56,6 +57,8 @@ public class SimpleInformationStrategy implements Strategy{
 
 	private boolean showPlayerData_entered = false;
 	
+	private long playerProfile_update_timer = 0;
+
 	public void showPlayerData(){
 		
 		PlayerData data;
@@ -68,6 +71,10 @@ public class SimpleInformationStrategy implements Strategy{
 		int retry = 0;
 		while (true) {
 			try {
+				if ((System.currentTimeMillis() - playerProfile_update_timer) > (60 * 1000)) {
+					go.getPlayerProfile().updateProfile();
+					playerProfile_update_timer = System.currentTimeMillis();
+				}
 				data = go.getPlayerProfile().getPlayerData();
 				break;
 			} catch (LoginFailedException e) {
@@ -106,6 +113,10 @@ public class SimpleInformationStrategy implements Strategy{
 		int retry = 0;
 		while (true) {
 			try {
+				if ((System.currentTimeMillis() - playerProfile_update_timer) > (60 * 1000)) {
+					go.getPlayerProfile().updateProfile();
+					playerProfile_update_timer = System.currentTimeMillis();
+				}
 				stats = go.getPlayerProfile().getStats();
 				break;
 			} catch (LoginFailedException e) {
@@ -192,7 +203,7 @@ public class SimpleInformationStrategy implements Strategy{
 		
 		long incubate = hatchery.getEggs().stream().filter(egg->egg.isIncubate()).count();
 		long all = hatchery.getEggs().size();
-		logger.info("[Information][Hatchery] hatching egg:{}/{}", incubate, all);		
+		logger.info("[Information][Hatchery] hatching egg:{}/{}", incubate, all);
 	}
 	
 	private boolean showItemBag_entered = false;
@@ -424,4 +435,6 @@ public class SimpleInformationStrategy implements Strategy{
 		});
 
 	}
+	
+	
 }
