@@ -99,7 +99,10 @@ public class SimpleLootPokestopStrategy implements Strategy{
 		logger.info("[Loot][Result] exp:{} items({}):{}", result.getExperience(), all, items);
 	}
 	
-	private static PokestopLootResult loot(Pokestop stop) {
+	private Pokestop previousStop;
+	private int duplicate_loot_count=0;
+	
+	private PokestopLootResult loot(Pokestop stop) {
 		int retry = 1;
 		
 		PokestopLootResult result = null;
@@ -120,6 +123,18 @@ public class SimpleLootPokestopStrategy implements Strategy{
 			String m = "Failed to get player data";
 			logger.error(m);
 			throw new RuntimeException(m);
+		}
+		
+		if (previousStop!=null && previousStop.getId().equals(stop.getId())){
+			if (duplicate_loot_count>=5) {
+				logger.warn("[Loot] Loop at same pokestop 5 times. It could be a soft ban. Exit program.");
+				System.exit(0);
+			} else {
+				duplicate_loot_count++;
+			}
+		}else{
+			previousStop = stop;
+			duplicate_loot_count=0;
 		}
 		
 		return result;
