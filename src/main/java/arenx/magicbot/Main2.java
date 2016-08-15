@@ -24,7 +24,12 @@ public class Main2 {
 	private Strategy transferStrategy;
 
 	public static void main(String[] argv) {
-		new Main2();
+		try {
+			new Main2();
+		} catch (Throwable e) {
+			logger.error("Someting gose wrong", e);
+		}
+		
 	}
 
 	private Main2(){

@@ -1,3 +1,6 @@
-*.jar
-target
-.project
+/bin/
+/target/
+/bin/
+/bin/
+/bin/
+/bin/
