@@ -95,31 +95,6 @@ public class SimpleLevelUpStrategy implements Strategy{
 		
 		previousLevel = newLevel;
 		
-		retry = 0;
-		while (true) {
-			try {
-				
-				go.getPlayerProfile().checkAndEquipBadges();
-				
-				break;
-			} catch (LoginFailedException e) {
-				logger.error(e.getMessage(), e);
-				throw new RuntimeException(e);
-			} catch (RemoteServerException e) {
-				if (retry >= Config.instance.getMaxRetryWhenServerError()) {
-					String message = "[LevelUp] Failed to get checkAndEquipBadges";
-					logger.error(message, e);
-					break;
-				}
-				
-				retry++;
-				
-				logger.warn("[LevelUp] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
-						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());				
-			}
-		}
-		
 		return rewards;
 	}
 
