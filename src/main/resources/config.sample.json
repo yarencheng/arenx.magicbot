@@ -1,8 +1,8 @@
 {
   "MaxRetryWhenServerError" : 5,
   "DelayMsBetweenApiRequestRetry" : 5000,
-  "DefaultLatitude" : 25.159910,
-  "DefaultLongitude" : 121.456276,
+  "DefaultLatitude" : 25.043099,
+  "DefaultLongitude" : 121.514981,
   "DefaultAltitude" : 18,
   "SpeedPerSecond": 2, // meter per second
   "BackBag" : {
