@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.auth.GoogleUserCredentialProvider;
+import com.pokegoapi.auth.PtcCredentialProvider;
 
 import okhttp3.OkHttpClient;
 
@@ -115,11 +116,28 @@ public class Main2 {
 			}
 
 		case PTC:
-			RuntimeException e = new RuntimeException("PTC is not support");
-			logger.error(e.getMessage(), e);
-			throw e;
+			
+			try {
+				OkHttpClient httpClient = new OkHttpClient();
+				
+				System.out.println("Enter PTC username:");
+				Scanner username_sc = new Scanner(System.in);
+				String username = username_sc.nextLine();
+				
+				System.out.println("Enter PTC password:");
+				Scanner password_sc = new Scanner(System.in);
+				String password = password_sc.nextLine();
+				
+				PokemonGo go = new PokemonGo(new PtcCredentialProvider(httpClient,username,password),httpClient);
+				
+				return go;
+			} catch (Exception e1) {
+				String message = "Failed to login";
+				logger.error(message, e1);
+				throw new RuntimeException(message, e1);
+			}
 		default:
-			e = new RuntimeException("Unknown auth type");
+			RuntimeException e = new RuntimeException("Unknown auth type");
 			logger.error(e.getMessage(), e);
 			throw e;
 		}
