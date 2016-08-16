@@ -1,7 +1,9 @@
 package arenx.magicbot;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomUtils;
@@ -57,19 +59,19 @@ public class SimpleLootPokestopStrategy implements Strategy{
 		if (!result.wasSuccessful()) {
 			String name = Utils.getPokestopDetail(stop)!=null ? Utils.getPokestopDetail(stop).getName()
 					: stop.getId();
-			String message = "[Loot] failed to loot ["+name+"] result:"+result.getResult();
-			logger.error("message");
-			throw new RuntimeException(message);
+
+			logger.warn("[Loot] Failed to loot [{}]; add it to error history. result:{}", name, result.getResult());
+			pokestop_no_result_set_history.add(stop.getId());
+			return;
 		}
 
 		if (result.getResult() == FortSearchResponse.Result.INVENTORY_FULL){
 			logger.info("[Loot] backbag is full");
 			cleanBackbagStratege.execute();
 		}
-
-
-
 	}
+
+	private Set<String> pokestop_no_result_set_history = new TreeSet<String>();
 
 	private static void showPokestopLootResult(PokestopLootResult result) {
 		StringBuilder sb = new StringBuilder();
@@ -170,6 +172,7 @@ public class SimpleLootPokestopStrategy implements Strategy{
 
 		Optional<Pokestop> stop = mapObjects.getPokestops().stream()
 			.filter(a->a.canLoot())
+			.filter(a->!pokestop_no_result_set_history.contains(a.getId()))
 			.sorted((a,b)->Double.compare(a.getDistance(), b.getDistance()))
 			.findFirst()
 			;
