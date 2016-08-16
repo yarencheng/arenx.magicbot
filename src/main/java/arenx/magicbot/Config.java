@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -57,42 +56,42 @@ public class Config {
 	public int getMaxRetryWhenServerError() {
 		return maxRetryWhenServerError;
 	}
-	
+
 	@JsonProperty(value = "DelayMsBetweenApiRequestRetry")
 	private long delayMsBetweenApiRequestRetry;
 
 	public long getDelayMsBetweenApiRequestRetry() {
 		return delayMsBetweenApiRequestRetry;
 	}
-	
+
 	@JsonProperty(value = "DefaultLongitude")
 	private double defaultLongitude;
 
 	public Double getDefaultLongitude() {
 		return defaultLongitude;
 	}
-	
+
 	@JsonProperty(value = "DefaultLatitude")
 	private Double defaultLatitude;
 
 	public Double getDefaultLatitude() {
 		return defaultLatitude;
 	}
-	
+
 	@JsonProperty(value = "DefaultAltitude")
 	private Double defaultAltitude;
 
 	public Double getDefaultAltitude() {
 		return defaultAltitude;
 	}
-	
+
 	@JsonProperty(value = "SpeedPerSecond")
 	private Double speedPerSecond;
 
 	public Double getSpeedPerSecond() {
 		return speedPerSecond;
 	}
-	
+
 	@JsonProperty(value = "BackBag")
 	private BackBag backBag;
 
@@ -107,21 +106,21 @@ public class Config {
 		public Integer getMaxReviveToKeep() {
 			return maxReviveToKeep;
 		}
-		
+
 		@JsonProperty(value = "MaxBallToKeep")
 		private Integer maxBallToKeep;
 
 		public Integer getMaxBallToKeep() {
 			return maxBallToKeep;
 		}
-		
+
 		@JsonProperty(value = "MaxPotionToKeep")
 		private Integer maxPotionToKeep;
 
 		public Integer getMaxPotionToKeep() {
 			return maxPotionToKeep;
 		}
-		
+
 		@JsonProperty(value = "MaxBerryToKeep")
 		private Integer maxBerryToKeep;
 
@@ -129,14 +128,14 @@ public class Config {
 			return maxBerryToKeep;
 		}
 	}
-	
+
 	@JsonProperty(value = "Auth")
 	private Auth auth;
 
 	public Auth getAuth() {
 		return auth;
 	}
-	
+
 	public static class Auth{
 		enum AuthType {
 			GOOGLE, PTC
@@ -148,21 +147,21 @@ public class Config {
 		public AuthType getAuthType() {
 			return authType;
 		}
-		
+
 		@JsonProperty(value = "PtcUsername", required = true)
 		private String ptcUsername;
 
 		public String getPtcUsername() {
 			return ptcUsername;
 		}
-		
+
 		@JsonProperty(value = "PtcPassword", required = true)
 		private String ptcPassword;
 
 		public String getPtcPassword() {
 			return ptcPassword;
 		}
-		
+
 	}
 
 }

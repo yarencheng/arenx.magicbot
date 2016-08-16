@@ -23,37 +23,37 @@ public class SimpleLootPokestopStrategy implements Strategy{
 	private static Logger logger = LoggerFactory.getLogger(SimpleLootPokestopStrategy.class);
 	private PokemonGo go;
 	private Strategy cleanBackbagStratege;
-	
+
 	public SimpleLootPokestopStrategy(PokemonGo go){
 		this.go=go;
 	}
-	
+
 	public void setCleanBackbagStrategy(Strategy s){
 		this.cleanBackbagStratege=s;
 	}
-	
+
 	@Override
 	public void execute() {
 		Pokestop stop = getNearestLootablePokestop();
-		
+
 		if (stop==null) {
 			return;
 		}
-		
+
 		if(logger.isDebugEnabled()){
 			String name = Utils.getPokestopDetail(stop) != null ? Utils.getPokestopDetail(stop).getName()
 					: stop.getId();
 			logger.debug("[Moving] try loot [{}]", name);
 		}
-		
+
 		Utils.sleep(RandomUtils.nextLong(1000, 2000));
 		PokestopLootResult result = loot(stop);
 		showPokestopLootResult(result);
-		
+
 		if (!result.wasSuccessful() && result.getResult() == FortSearchResponse.Result.OUT_OF_RANGE) {
 			return;
 		}
-		
+
 		if (!result.wasSuccessful()) {
 			String name = Utils.getPokestopDetail(stop)!=null ? Utils.getPokestopDetail(stop).getName()
 					: stop.getId();
@@ -61,19 +61,19 @@ public class SimpleLootPokestopStrategy implements Strategy{
 			logger.error("message");
 			throw new RuntimeException(message);
 		}
-		
+
 		if (result.getResult() == FortSearchResponse.Result.INVENTORY_FULL){
 			logger.info("[Loot] backbag is full");
 			cleanBackbagStratege.execute();
 		}
-		
-		
-		
+
+
+
 	}
-	
+
 	private static void showPokestopLootResult(PokestopLootResult result) {
 		StringBuilder sb = new StringBuilder();
-		
+
 		String items = result.getItemsAwarded().stream()
 			.collect(
 				() -> new TreeMap<ItemId, Integer>(),
@@ -85,26 +85,26 @@ public class SimpleLootPokestopStrategy implements Strategy{
                 	}
                 },
                 (map1, map2) -> map1.putAll(map2)
-				
+
 				)
 			.entrySet()
 			.stream()
 			.map(e->e.getKey()+"("+e.getValue()+")")
 			.collect(Collectors.joining(", "));
-		
+
 		int all = result.getItemsAwarded().stream()
 				.mapToInt(item->item.getItemCount())
 				.sum();
-			
+
 		logger.info("[Loot][Result] exp:{} items({}):{}", result.getExperience(), all, items);
 	}
-	
+
 	private Pokestop previousStop;
 	private int duplicate_loot_count=0;
-	
+
 	private PokestopLootResult loot(Pokestop stop) {
 		int retry = 1;
-		
+
 		PokestopLootResult result = null;
 
 		while (retry <= Config.instance.getMaxRetryWhenServerError()) {
@@ -124,7 +124,7 @@ public class SimpleLootPokestopStrategy implements Strategy{
 			logger.error(m);
 			throw new RuntimeException(m);
 		}
-		
+
 		if (previousStop!=null && previousStop.getId().equals(stop.getId())){
 			if (duplicate_loot_count>=5) {
 				logger.warn("[Loot] Loop at same pokestop 5 times. It could be a soft ban. Exit program.");
@@ -136,14 +136,14 @@ public class SimpleLootPokestopStrategy implements Strategy{
 			previousStop = stop;
 			duplicate_loot_count=0;
 		}
-		
+
 		return result;
 
 	}
-	
+
 	private Pokestop getNearestLootablePokestop(){
 		MapObjects mapObjects;
-		
+
 		int retry = 0;
 		while (true) {
 			try {
@@ -159,21 +159,21 @@ public class SimpleLootPokestopStrategy implements Strategy{
 					logger.error(message, e);
 					throw new RuntimeException(message, e);
 				}
-				
+
 				retry++;
-				
+
 				logger.warn("[Walking] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());				
+				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
-		
+
 		Optional<Pokestop> stop = mapObjects.getPokestops().stream()
 			.filter(a->a.canLoot())
 			.sorted((a,b)->Double.compare(a.getDistance(), b.getDistance()))
 			.findFirst()
 			;
-		
+
 		return stop.isPresent() ? stop.get() : null;
 	}
 

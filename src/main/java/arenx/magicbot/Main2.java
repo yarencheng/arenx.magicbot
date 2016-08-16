@@ -15,7 +15,7 @@ import okhttp3.OkHttpClient;
 public class Main2 {
 
 	private static Logger logger = LoggerFactory.getLogger(Main2.class);
-	
+
 	private PokemonGo go;
 	private Strategy walkingStrategy;
 	private Strategy lootStrategy;
@@ -31,19 +31,20 @@ public class Main2 {
 		} catch (Throwable e) {
 			logger.error("Someting gose wrong", e);
 		}
-		
+
 	}
 
 	private Main2(){
 		Runtime.getRuntime().addShutdownHook(new Thread() {
-		    public void run() {
+		    @Override
+			public void run() {
 		    	SaveCurrentState();
 		    }
 		 });
-		
+
 		logger.info("login ...");
 		go = login();
-		
+
 		walkingStrategy = new ShortestPathWalkingStrategy(go);
 		lootStrategy = new SimpleLootPokestopStrategy(go);
 		cleanBackbagStrategy = new SimpleCleanBackbagStrategy(go);
@@ -51,20 +52,20 @@ public class Main2 {
 		pokemonEncounterStrategy = new SimplePokemonEncounterStrategy(go);
 		transferStrategy = new SimplePokemonTransferStrategy(go);
 		levelUpStrategy = new SimpleLevelUpStrategy(go);
-		
+
 		((SimpleLootPokestopStrategy)lootStrategy).setCleanBackbagStrategy(cleanBackbagStrategy);
 		((SimplePokemonEncounterStrategy)pokemonEncounterStrategy).setInformationStrategy(infoStrategy);
-		
+
 		((SimpleInformationStrategy)infoStrategy).showAll();
-		
+
 		while(true){
 			levelUpStrategy.execute();
 			transferStrategy.execute();
-			
+
 			walkingStrategy.execute();
 			pokemonEncounterStrategy.execute();
 			lootStrategy.execute();
-			
+
 //			break;
 		}
 	}
@@ -76,7 +77,7 @@ public class Main2 {
 
 		TmpData.instance.saveToFile();
 	}
-	
+
 	private static PokemonGo login() {
 		switch (Config.instance.getAuth().getAuthType()) {
 		case GOOGLE:
@@ -116,15 +117,15 @@ public class Main2 {
 			}
 
 		case PTC:
-			
+
 			try {
 				OkHttpClient httpClient = new OkHttpClient();
-				
+
 				String username = Config.instance.getAuth().getPtcUsername();
 				String password = Config.instance.getAuth().getPtcPassword();
-				
+
 				PokemonGo go = new PokemonGo(new PtcCredentialProvider(httpClient,username,password),httpClient);
-				
+
 				return go;
 			} catch (Exception e1) {
 				String message = "Failed to login";

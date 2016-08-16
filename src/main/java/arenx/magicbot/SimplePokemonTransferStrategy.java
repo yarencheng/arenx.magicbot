@@ -18,7 +18,7 @@ public class SimplePokemonTransferStrategy implements Strategy{
 
 	private static Logger logger = LoggerFactory.getLogger(SimplePokemonTransferStrategy.class);
 	private PokemonGo go;
-	
+
 	public SimplePokemonTransferStrategy(PokemonGo go){
 		this.go=go;
 	}
@@ -26,24 +26,24 @@ public class SimplePokemonTransferStrategy implements Strategy{
 	@Override
 	public void execute() {
 		PokeBank pokeBank = getPokeBank();
-		
+
 		if (pokeBank.getPokemons().size() < 200) {
 			return;
 		}
-		
+
 		pokeBank.getPokemons()
 			.stream()
 			.filter(mon->mon.getIvRatio()<0.8)
 			.filter(mon->mon.getLevel()<20)
 			.forEach(mon->{
-				
+
 				logger.debug("[Transfer] #{}{}({}) - try to transfer", mon.getPokemonId().getNumber(),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH));
-				
+
 				Utils.sleep(1000);
 				ReleasePokemonResponse.Result r = transferPokemon(mon);
-				
+
 				if (r == ReleasePokemonResponse.Result.SUCCESS) {
 					logger.info("[Transfer] #{}{}({}) LV:{} CP:{} IV:{} success", mon.getPokemonId().getNumber(),
 							PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
@@ -58,12 +58,12 @@ public class SimplePokemonTransferStrategy implements Strategy{
 				}
 			});
 			;
-		
+
 	}
-	
+
 	private ReleasePokemonResponse.Result transferPokemon(Pokemon mon){
 		ReleasePokemonResponse.Result result;
-		
+
 		int retry = 0;
 		while (true) {
 			try {
@@ -78,21 +78,21 @@ public class SimplePokemonTransferStrategy implements Strategy{
 					logger.error(message, e);
 					throw new RuntimeException(message, e);
 				}
-				
+
 				retry++;
-				
+
 				logger.warn("[Transfer] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());				
+				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	private PokeBank getPokeBank(){
 		PokeBank pokeBank;
-		
+
 		int retry = 0;
 		while (true) {
 			try {
@@ -108,16 +108,16 @@ public class SimplePokemonTransferStrategy implements Strategy{
 					logger.error(message, e);
 					throw new RuntimeException(message, e);
 				}
-				
+
 				retry++;
-				
+
 				logger.warn("[Transfer] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());				
+				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
-		
+
 		return pokeBank;
 	}
-	
+
 }

@@ -1,8 +1,8 @@
 package arenx.magicbot;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.RandomUtils;
@@ -23,25 +23,25 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 
 	private static Logger logger = LoggerFactory.getLogger(SimpleCleanBackbagStrategy.class);
 	private PokemonGo go;
-	
+
 	public SimpleCleanBackbagStrategy(PokemonGo go){
 		this.go=go;
 	}
-	
+
 	@Override
 	public void execute() {
 
 		refreshInventories();
 		removeBackBagItems();
-		
-		
+
+
 	}
-	
+
 	private void refreshInventories() {
 		int retry = 1;
 
 		Utils.sleep(1000);
-		
+
 		while (retry <= Config.instance.getMaxRetryWhenServerError()) {
 			try {
 				go.getInventories().updateInventories();
@@ -61,11 +61,11 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 		}
 
 	}
-	
+
 	private void removeBackBagItems(){
-		
+
 		List<Entry<ItemId, Integer>> ids = new ArrayList();
-		
+
 		Inventories inventories;
 		try {
 			inventories = go.getInventories();
@@ -74,25 +74,25 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 			logger.error(m,e2);
 			throw new RuntimeException(m);
 		}
-		
-		Item berry = inventories.getItemBag().getItem(ItemId.ITEM_RAZZ_BERRY);		
-		
+
+		Item berry = inventories.getItemBag().getItem(ItemId.ITEM_RAZZ_BERRY);
+
 		if (berry!=null && berry.getCount() > Config.instance.getBackBag().getMaxBerryToKeep()) {
 			ids.add(new SimpleEntry<ItemId, Integer>(berry.getItemId(), berry.getCount() - Config.instance.getBackBag().getMaxBerryToKeep()));
 		}
-		
-		Item revive = inventories.getItemBag().getItem(ItemId.ITEM_REVIVE);		
-		
+
+		Item revive = inventories.getItemBag().getItem(ItemId.ITEM_REVIVE);
+
 		if (revive!=null && revive.getCount() > Config.instance.getBackBag().getMaxReviveToKeep()) {
 			ids.add(new SimpleEntry<ItemId, Integer>(revive.getItemId(), revive.getCount() - Config.instance.getBackBag().getMaxReviveToKeep()));
 		}
-		
+
 
 		Item ball_poke = inventories.getItemBag().getItem(ItemId.ITEM_POKE_BALL);
 		Item ball_great = inventories.getItemBag().getItem(ItemId.ITEM_GREAT_BALL);
 		Item ball_ultra = inventories.getItemBag().getItem(ItemId.ITEM_ULTRA_BALL);
 		Item ball_master = inventories.getItemBag().getItem(ItemId.ITEM_MASTER_BALL);
-		
+
 		int ball_count = 0;
 		if (ball_poke != null) {
 			ball_count += ball_poke.getCount();
@@ -107,7 +107,7 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 			ball_count += ball_master.getCount();
 		}
 		ball_count -= Config.instance.getBackBag().getMaxBallToKeep();
-		
+
 		if (ball_count > 0) {
 			if (ball_poke != null && ball_count > 0) {
 				if (ball_poke.getCount() > ball_count) {
@@ -146,13 +146,13 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 				}
 			}
 		}
-		
+
 
 		Item potion = inventories.getItemBag().getItem(ItemId.ITEM_POTION);
 		Item potion_hyper = inventories.getItemBag().getItem(ItemId.ITEM_HYPER_POTION);
 		Item potion_super = inventories.getItemBag().getItem(ItemId.ITEM_SUPER_POTION);
 		Item potion_max = inventories.getItemBag().getItem(ItemId.ITEM_MAX_POTION);
-		
+
 		int potion_count = 0;
 		if (potion != null) {
 			potion_count += potion.getCount();
@@ -167,7 +167,7 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 			potion_count += potion_max.getCount();
 		}
 		potion_count -= Config.instance.getBackBag().getMaxPotionToKeep();
-		
+
 		if (potion_count > 0) {
 			if (potion != null && potion_count > 0) {
 				if (potion.getCount() > potion_count) {
@@ -206,12 +206,12 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 				}
 			}
 		}
-		
+
 		ids.forEach(e->{
-			logger.info("[CleanBackbag] remove:{} count:{}", e.getKey(), e.getValue());			
-			
+			logger.info("[CleanBackbag] remove:{} count:{}", e.getKey(), e.getValue());
+
 			int retry = 1;
-			
+
 			PokestopLootResult result = null;
 
 			while (retry <= Config.instance.getMaxRetryWhenServerError()) {
@@ -221,7 +221,7 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 					case SUCCESS:
 						break;
 					case ERROR_CANNOT_RECYCLE_INCUBATORS:
-					case ERROR_NOT_ENOUGH_COPIES:					
+					case ERROR_NOT_ENOUGH_COPIES:
 					case UNRECOGNIZED:
 					case UNSET:
 					default:
@@ -243,7 +243,7 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 				logger.error(m);
 				throw new RuntimeException(m);
 			}
-			
+
 		});
 	}
 

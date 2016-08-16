@@ -15,20 +15,20 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 public class TmpData {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(TmpData.class);
 	public static TmpData instance;
 	private static final String filePath = "tmpdata.json" ;
-	
+
 	static {
 		File f = new File(filePath);
-		
+
 		if (!f.exists()){
 			instance = new TmpData();
 		} else {
 			JsonFactory jf = new JsonFactory ();
 			jf.enable(JsonParser.Feature.ALLOW_COMMENTS);
-			
+
 			ObjectMapper mapper = new ObjectMapper(jf);
 			try {
 				instance = mapper.readValue(f, TmpData.class);
@@ -45,9 +45,9 @@ public class TmpData {
 				logger.error(message,e);
 				throw new RuntimeException(message, e);
 			}
-		}		
+		}
 	}
-	
+
 	public void saveToFile(){
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
@@ -62,12 +62,12 @@ public class TmpData {
 	}
 
 	private TmpData(){
-		
+
 	}
-	
+
 	@JsonProperty("GoogleRefreshToken")
 	private String googleRefreshToken;
-	
+
 
 	public String getGoogleRefreshToken() {
 		return googleRefreshToken;
@@ -76,21 +76,21 @@ public class TmpData {
 	public void setGoogleRefreshToken(String googleRefreshToken) {
 		this.googleRefreshToken = googleRefreshToken;
 	}
-	
+
 	@JsonProperty(value = "LastLongitude")
 	private Double lastLongitude;
 
 	public Double getLastLongitude() {
 		return lastLongitude;
 	}
-	
+
 	@JsonProperty(value = "LastLatitude")
 	private Double lastLatitude;
 
 	public Double getLastLatitude() {
 		return lastLatitude;
 	}
-	
+
 	@JsonProperty(value = "LastAltitude")
 	private Double lastAltitude;
 
@@ -109,5 +109,5 @@ public class TmpData {
 	public void setLastAltitude(Double lastAltitude) {
 		this.lastAltitude = lastAltitude;
 	}
-	
+
 }
