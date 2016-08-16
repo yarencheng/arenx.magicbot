@@ -43,6 +43,8 @@ public class SimpleLevelUpStrategy implements Strategy{
 
 		}
 
+		logger.info("[LevelUp] up to {}", previousLevel);
+
 		rewards.getRewards().stream().forEach(item->{
 			logger.info("[LevelUp] get {} {}", item.getItemCount(), item.getItemId());
 
