@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 public class TmpData {
 	
-	private static Logger logger = LoggerFactory.getLogger(Main.class);
+	private static Logger logger = LoggerFactory.getLogger(TmpData.class);
 	public static TmpData instance;
 	private static final String filePath = "tmpdata.json" ;
 	
