@@ -2,6 +2,9 @@ package arenx.magicbot;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -20,7 +23,7 @@ import POGOProtos.Data.PokemonDataOuterClass.PokemonData;
 
 public class SimplePokemonEncounterStrategy implements Strategy{
 
-	private static Logger logger = LoggerFactory.getLogger(SimpleInformationStrategy.class);
+	private static Logger logger = LoggerFactory.getLogger(SimplePokemonEncounterStrategy.class);
 	private PokemonGo go;
 	private Strategy informationStrategy;
 	
@@ -95,8 +98,18 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 		}		
 		return er;
 	}
+	
+	private Set<Long> catchPokemon_errorStatus_history= new TreeSet<Long>();
 		
-	public CatchResult catchPokemon(PokemonData data, CatchablePokemon mon){
+	public void catchPokemon(PokemonData data, CatchablePokemon mon){
+		
+		if (catchPokemon_errorStatus_history.contains(data.getId())) {
+			logger.warn("[Encounter] skip to catch #{}{}({}) since this pokemon({}) has an error record in the history.", mon.getPokemonId().getNumber(),
+					PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
+					PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH),
+					data.getId());
+			return;
+		}
 		
 		CatchResult cr;
 		
@@ -141,16 +154,21 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 					Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());	
 				} catch (NoSuchItemException e) {
 					logger.warn("[Encounter] Failed to catch since out of balls. {}", e.getMessage());
-					return null;
+					return;
 				}
 			}
-			
+
 			switch (cr.getStatus()) {
 			case CATCH_ERROR:
-				logger.error("[Encounter] #{}{}({}) - get error status", mon.getPokemonId().getNumber(),
+				logger.warn("[Encounter] get error status after trying to catch #{}{}({}); record this pokemon({}) in error history",
+						mon.getPokemonId().getNumber(),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
-						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH));
-				return cr;
+						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH),
+						data.getId());
+				
+				catchPokemon_errorStatus_history.add(data.getId());
+				
+				return;
 			case CATCH_ESCAPE:
 				logger.debug("[Encounter] #{}{}({}) - escape", mon.getPokemonId().getNumber(),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
@@ -160,7 +178,7 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 				logger.debug("[Encounter] #{}{}({}) - flee", mon.getPokemonId().getNumber(),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH));
-				return cr;
+				return;
 			case CATCH_MISSED:
 				logger.debug("[Encounter] #{}{}({}) - missed", mon.getPokemonId().getNumber(),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
@@ -180,17 +198,17 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 						catch_count,
 						exp);
 				
-				return cr;
+				return;
 			case UNRECOGNIZED:
 				logger.error("[Encounter] #{}{}({}) - get inrecognized status", mon.getPokemonId().getNumber(),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH));
-				return cr;
+				return;
 			default:
 				logger.error("[Encounter] #{}{}({}) - get unknown status", mon.getPokemonId().getNumber(),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH));
-				return cr;
+				return;
 			}
 			
 			if (catch_count <= 10){
@@ -208,7 +226,7 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 		
 		
 		
-		return cr;
+		return;
 		
 		
 	}
