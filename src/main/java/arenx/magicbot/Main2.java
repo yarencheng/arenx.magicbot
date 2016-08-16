@@ -78,7 +78,7 @@ public class Main2 {
 	}
 	
 	private static PokemonGo login() {
-		switch (Config.instance.getAuthType()) {
+		switch (Config.instance.getAuth().getAuthType()) {
 		case GOOGLE:
 
 			try {
@@ -120,13 +120,8 @@ public class Main2 {
 			try {
 				OkHttpClient httpClient = new OkHttpClient();
 				
-				System.out.println("Enter PTC username:");
-				Scanner username_sc = new Scanner(System.in);
-				String username = username_sc.nextLine();
-				
-				System.out.println("Enter PTC password:");
-				Scanner password_sc = new Scanner(System.in);
-				String password = password_sc.nextLine();
+				String username = Config.instance.getAuth().getPtcUsername();
+				String password = Config.instance.getAuth().getPtcPassword();
 				
 				PokemonGo go = new PokemonGo(new PtcCredentialProvider(httpClient,username,password),httpClient);
 				

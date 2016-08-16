@@ -51,17 +51,6 @@ public class Config {
 
 	}
 
-	enum AuthType {
-		GOOGLE, PTC
-	}
-
-	@JsonProperty(value = "AuthType", required = true)
-	private AuthType authType;
-
-	public AuthType getAuthType() {
-		return authType;
-	}
-	
 	@JsonProperty(value = "MaxRetryWhenServerError")
 	private int maxRetryWhenServerError;
 
@@ -139,6 +128,41 @@ public class Config {
 		public Integer getMaxBerryToKeep() {
 			return maxBerryToKeep;
 		}
+	}
+	
+	@JsonProperty(value = "Auth")
+	private Auth auth;
+
+	public Auth getAuth() {
+		return auth;
+	}
+	
+	public static class Auth{
+		enum AuthType {
+			GOOGLE, PTC
+		}
+
+		@JsonProperty(value = "AuthType", required = true)
+		private AuthType authType;
+
+		public AuthType getAuthType() {
+			return authType;
+		}
+		
+		@JsonProperty(value = "PtcUsername", required = true)
+		private String ptcUsername;
+
+		public String getPtcUsername() {
+			return ptcUsername;
+		}
+		
+		@JsonProperty(value = "PtcPassword", required = true)
+		private String ptcPassword;
+
+		public String getPtcPassword() {
+			return ptcPassword;
+		}
+		
 	}
 
 }
