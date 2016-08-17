@@ -45,7 +45,8 @@ public class Main2 {
 						e.getCause().getCause() instanceof ExecutionException &&
 						e.getCause().getCause().getCause() instanceof LoginFailedException) {
 					LoginFailedException le = (LoginFailedException) e.getCause().getCause().getCause();
-					if (le.getMessage().contains("Invalid Auth status code recieved, token not refreshed?")){
+					if (le.getMessage().contains("Invalid Auth status code recieved, token not refreshed?") ||
+							le.getMessage().contains("Your account may be banned! please try from the official client.")){
 						logger.warn("Got LoginFailedException", e);
 
 						long time = System.currentTimeMillis();
