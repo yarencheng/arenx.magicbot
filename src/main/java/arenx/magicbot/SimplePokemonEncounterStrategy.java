@@ -51,6 +51,14 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 					PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
 					PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH));
 
+			if (catchPokemon_errorStatus_history.contains(mon.getEncounterId())) {
+				logger.warn("[Encounter] skip to catch #{}{}({}) since this encounter({}) has an error record in the history.", mon.getPokemonId().getNumber(),
+						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
+						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH),
+						mon.getEncounterId());
+				return;
+			}
+
 			EncounterResult er = encounter(mon);
 
 			if (!er.wasSuccessful()) {
@@ -101,14 +109,6 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 	private Set<Long> catchPokemon_errorStatus_history= new TreeSet<Long>();
 
 	public void catchPokemon(PokemonData data, CatchablePokemon mon){
-
-		if (catchPokemon_errorStatus_history.contains(data.getId())) {
-			logger.warn("[Encounter] skip to catch #{}{}({}) since this encounter({}) has an error record in the history.", mon.getPokemonId().getNumber(),
-					PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
-					PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH),
-					mon.getEncounterId());
-			return;
-		}
 
 		CatchResult cr;
 
@@ -165,7 +165,7 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH),
 						mon.getEncounterId());
 
-				catchPokemon_errorStatus_history.add(data.getId());
+				catchPokemon_errorStatus_history.add(mon.getEncounterId());
 
 				return;
 			case CATCH_ESCAPE:
