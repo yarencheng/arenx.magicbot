@@ -46,9 +46,9 @@ public class Main2 {
 						e.getCause().getCause() instanceof ExecutionException &&
 						(e.getCause().getCause().getCause() instanceof LoginFailedException || e.getCause().getCause().getCause() instanceof RemoteServerException)
 						) {
-					LoginFailedException le = (LoginFailedException) e.getCause().getCause().getCause();
-					if (le.getMessage().contains("Invalid Auth status code recieved, token not refreshed?") ||
-							le.getMessage().contains("Your account may be banned! please try from the official client.")){
+					Throwable t = e.getCause().getCause().getCause();
+					if (t.getMessage().contains("Invalid Auth status code recieved, token not refreshed?") ||
+							t.getMessage().contains("Your account may be banned! please try from the official client.")){
 						logger.warn("Got LoginFailedException", e);
 
 						long time = System.currentTimeMillis();
