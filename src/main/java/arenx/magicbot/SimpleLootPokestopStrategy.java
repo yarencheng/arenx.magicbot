@@ -69,6 +69,15 @@ public class SimpleLootPokestopStrategy implements Strategy{
 			logger.info("[Loot] backbag is full");
 			cleanBackbagStratege.execute();
 		}
+
+		if (result.getResult() == FortSearchResponse.Result.IN_COOLDOWN_PERIOD){
+			String name = Utils.getPokestopDetail(stop)!=null ? Utils.getPokestopDetail(stop).getName()
+					: stop.getId();
+
+			logger.warn("[Loot] at [{}] a cooling down pokestop. someting wrong between server and logal pokemonapi", name);
+
+			pokestop_no_result_set_history.add(stop.getId());
+		}
 	}
 
 	private Set<String> pokestop_no_result_set_history = new TreeSet<String>();
