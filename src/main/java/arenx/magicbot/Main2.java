@@ -49,7 +49,7 @@ public class Main2 {
 					Throwable t = e.getCause().getCause().getCause();
 					if (t.getMessage().contains("Invalid Auth status code recieved, token not refreshed?") ||
 							t.getMessage().contains("Your account may be banned! please try from the official client.")){
-						logger.warn("Got LoginFailedException", e);
+						logger.warn("Got LoginFailedException or RemoteServerException", e);
 
 						long time = System.currentTimeMillis();
 						loginFailedException_time_listt.add(time);
@@ -64,8 +64,6 @@ public class Main2 {
 								}
 							}
 						}
-
-						main.SaveCurrentState();
 
 						Utils.sleep(5*60*1000);
 						logger.warn("restart");
