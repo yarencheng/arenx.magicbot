@@ -23,13 +23,13 @@ public class Main2 {
 	private static Logger logger = LoggerFactory.getLogger(Main2.class);
 
 	private PokemonGo go;
-	private Strategy walkingStrategy;
-	private Strategy lootStrategy;
-	private Strategy cleanBackbagStrategy;
-	private Strategy infoStrategy;
-	private Strategy pokemonEncounterStrategy;
-	private Strategy transferStrategy;
-	private Strategy levelUpStrategy;
+	private OldStrategy walkingStrategy;
+	private OldStrategy lootStrategy;
+	private OldStrategy cleanBackbagStrategy;
+	private OldStrategy infoStrategy;
+	private OldStrategy pokemonEncounterStrategy;
+	private OldStrategy transferStrategy;
+	private OldStrategy levelUpStrategy;
 
 	public static void main(String[] argv) {
 
@@ -62,7 +62,7 @@ public class Main2 {
 						}
 					}
 
-					Utils.sleep(5*60*1000);
+					OldUtils.sleep(5*60*1000);
 					logger.warn("restart");
 
 					continue;

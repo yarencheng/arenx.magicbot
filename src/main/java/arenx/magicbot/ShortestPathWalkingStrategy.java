@@ -12,7 +12,7 @@ import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 
-public class ShortestPathWalkingStrategy implements Strategy{
+public class ShortestPathWalkingStrategy implements OldStrategy{
 
 	private static Logger logger = LoggerFactory.getLogger(ShortestPathWalkingStrategy.class);
 	private PokemonGo go;
@@ -59,19 +59,19 @@ public class ShortestPathWalkingStrategy implements Strategy{
 			logger.info("[Walking] heading to default location");
 		} else if(distPokestop == null){
 			distPokestop = nearPokestop;
-			String name = Utils.getPokestopDetail(distPokestop) == null ? distPokestop.getId()
-					: Utils.getPokestopDetail(distPokestop).getName();
+			String name = OldUtils.getPokestopDetail(distPokestop) == null ? distPokestop.getId()
+					: OldUtils.getPokestopDetail(distPokestop).getName();
 			logger.info("[Moving] heading [{}] distance={}", name, distPokestop.getDistance());
 		} else if (distPokestop != null && !distPokestop.getId().equals(nearPokestop.getId())){
 			distPokestop = nearPokestop;
-			String name = Utils.getPokestopDetail(distPokestop) == null ? distPokestop.getId()
-					: Utils.getPokestopDetail(distPokestop).getName();
+			String name = OldUtils.getPokestopDetail(distPokestop) == null ? distPokestop.getId()
+					: OldUtils.getPokestopDetail(distPokestop).getName();
 			logger.info("[Moving] heading [{}] distance={}", name, distPokestop.getDistance());
 		} else {
 			if (logger.isDebugEnabled()){
 				String name = distPokestop == null ? "default location" :
-					Utils.getPokestopDetail(distPokestop) == null ? distPokestop.getId()
-						: Utils.getPokestopDetail(distPokestop).getName();
+					OldUtils.getPokestopDetail(distPokestop) == null ? distPokestop.getId()
+						: OldUtils.getPokestopDetail(distPokestop).getName();
 				logger.debug("[Moving] heading [{}] distance={}", name, distPokestop.getDistance());
 			}
 		}
@@ -85,7 +85,7 @@ public class ShortestPathWalkingStrategy implements Strategy{
 			dist_longitude = Config.instance.getDefaultLongitude();
 			dist_latitude = Config.instance.getDefaultLatitude();
 			dist_altitude = Config.instance.getDefaultAltitude();
-			ratio = Config.instance.getSpeedPerSecond() / Utils.distance(go.getLatitude(), go.getLongitude(), dist_latitude, dist_longitude);
+			ratio = Config.instance.getSpeedPerSecond() / OldUtils.distance(go.getLatitude(), go.getLongitude(), dist_latitude, dist_longitude);
 		}
 
 		double heading_longitude = (dist_longitude - go.getLongitude()) * ratio + go.getLongitude();
@@ -99,18 +99,18 @@ public class ShortestPathWalkingStrategy implements Strategy{
 			heading_altitude = go.getAltitude() + 0.0001;
 		}
 
-		double travel_distance = Utils.distance(go.getLatitude(), go.getLongitude(), heading_latitude, heading_longitude);
+		double travel_distance = OldUtils.distance(go.getLatitude(), go.getLongitude(), heading_latitude, heading_longitude);
 
 		if (logger.isDebugEnabled()){
 			String name = distPokestop == null ? "default location"
-					: Utils.getPokestopDetail(distPokestop) == null ? distPokestop.getId()
-					: Utils.getPokestopDetail(distPokestop).getName();
+					: OldUtils.getPokestopDetail(distPokestop) == null ? distPokestop.getId()
+					: OldUtils.getPokestopDetail(distPokestop).getName();
 
 			logger.debug("[Moving] heading to [{}] distance={} ({},{}) -> ({},{})", name, travel_distance, go.getLatitude(), go.getLongitude(), heading_latitude, heading_longitude);
 		}
 
 		go.setLocation(heading_latitude, heading_longitude, heading_altitude);
-		Utils.sleep(1000);
+		OldUtils.sleep(1000);
 	}
 
 	private Pokestop getNearestPokestop(){
@@ -120,7 +120,7 @@ public class ShortestPathWalkingStrategy implements Strategy{
 		while (true) {
 			try {
 				mapObjects = go.getMap().getMapObjects();
-				Utils.updateDetails(mapObjects.getPokestops());
+				OldUtils.updateDetails(mapObjects.getPokestops());
 				break;
 			} catch (LoginFailedException e) {
 				logger.error(e.getMessage(), e);
@@ -136,7 +136,7 @@ public class ShortestPathWalkingStrategy implements Strategy{
 
 				logger.warn("[Walking] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 

@@ -14,7 +14,7 @@ import com.pokegoapi.util.PokeNames;
 
 import POGOProtos.Networking.Responses.ReleasePokemonResponseOuterClass.ReleasePokemonResponse;
 
-public class SimplePokemonTransferStrategy implements Strategy{
+public class SimplePokemonTransferStrategy implements OldStrategy{
 
 	private static Logger logger = LoggerFactory.getLogger(SimplePokemonTransferStrategy.class);
 	private PokemonGo go;
@@ -41,7 +41,7 @@ public class SimplePokemonTransferStrategy implements Strategy{
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH));
 
-				Utils.sleep(1000);
+				OldUtils.sleep(1000);
 				ReleasePokemonResponse.Result r = transferPokemon(mon);
 
 				if (r == ReleasePokemonResponse.Result.SUCCESS) {
@@ -83,7 +83,7 @@ public class SimplePokemonTransferStrategy implements Strategy{
 
 				logger.warn("[Transfer] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 
@@ -113,7 +113,7 @@ public class SimplePokemonTransferStrategy implements Strategy{
 
 				logger.warn("[Transfer] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 

@@ -24,7 +24,7 @@ import POGOProtos.Data.PlayerDataOuterClass.PlayerData;
 import POGOProtos.Enums.PokemonIdOuterClass.PokemonId;
 import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 
-public class SimpleInformationStrategy implements Strategy{
+public class SimpleInformationStrategy implements OldStrategy{
 
 	private static Logger logger = LoggerFactory.getLogger(SimpleInformationStrategy.class);
 	private PokemonGo go;
@@ -58,7 +58,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 		if (!showPlayerData_entered) {
 			showPlayerData_entered = true;
-			Utils.sleep(1000);
+			OldUtils.sleep(1000);
 		}
 
 		int retry = 0;
@@ -84,7 +84,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 				logger.warn("[Information][PlayerData] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 
@@ -100,7 +100,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 		if (!showStats_entered) {
 			showStats_entered = true;
-			Utils.sleep(1000);
+			OldUtils.sleep(1000);
 		}
 
 		int retry = 0;
@@ -126,7 +126,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 				logger.warn("[Information][Stats] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 
@@ -167,7 +167,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 		if (!showHatchery_entered) {
 			showHatchery_entered = true;
-			Utils.sleep(1000);
+			OldUtils.sleep(1000);
 		}
 
 		int retry = 0;
@@ -190,7 +190,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 				logger.warn("[Information][Hatchery] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 
@@ -207,7 +207,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 		if (!showItemBag_entered) {
 			showItemBag_entered = true;
-			Utils.sleep(1000);
+			OldUtils.sleep(1000);
 		}
 
 		int retry = 0;
@@ -230,7 +230,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 				logger.warn("[Information][ItemBag] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 
@@ -294,7 +294,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 		if (!showPokedex_entered) {
 			showPokedex_entered = true;
-			Utils.sleep(1000);
+			OldUtils.sleep(1000);
 		}
 
 		int retry = 0;
@@ -317,7 +317,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 				logger.warn("[Information][Pokedex] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 
@@ -341,7 +341,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 		if (!showPokemon_entered) {
 			showPokemon_entered = true;
-			Utils.sleep(1000);
+			OldUtils.sleep(1000);
 		}
 
 		int retry = 0;
@@ -364,7 +364,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 				logger.warn("[Information][PokeBank] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 
@@ -395,7 +395,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 		if (!showCatchablePokemon_entered) {
 			showCatchablePokemon_entered = true;
-			Utils.sleep(1000);
+			OldUtils.sleep(1000);
 		}
 
 		int retry = 0;
@@ -417,7 +417,7 @@ public class SimpleInformationStrategy implements Strategy{
 
 				logger.warn("[Information][CatchablePokemon] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 

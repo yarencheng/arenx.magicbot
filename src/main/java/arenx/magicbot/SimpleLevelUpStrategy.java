@@ -8,7 +8,7 @@ import com.pokegoapi.api.player.PlayerLevelUpRewards;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 
-public class SimpleLevelUpStrategy implements Strategy{
+public class SimpleLevelUpStrategy implements OldStrategy{
 
 	private static Logger logger = LoggerFactory.getLogger(SimpleLevelUpStrategy.class);
 	private PokemonGo go;
@@ -89,7 +89,7 @@ public class SimpleLevelUpStrategy implements Strategy{
 
 				logger.warn("[LevelUp] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 

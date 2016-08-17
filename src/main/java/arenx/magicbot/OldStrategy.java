@@ -1,6 +1,6 @@
 package arenx.magicbot;
 
-public interface Strategy {
+public interface OldStrategy {
 
 	public void execute();
 }

@@ -20,17 +20,17 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 import POGOProtos.Networking.Responses.FortSearchResponseOuterClass.FortSearchResponse;
 
-public class SimpleLootPokestopStrategy implements Strategy{
+public class SimpleLootPokestopStrategy implements OldStrategy{
 
 	private static Logger logger = LoggerFactory.getLogger(SimpleLootPokestopStrategy.class);
 	private PokemonGo go;
-	private Strategy cleanBackbagStratege;
+	private OldStrategy cleanBackbagStratege;
 
 	public SimpleLootPokestopStrategy(PokemonGo go){
 		this.go=go;
 	}
 
-	public void setCleanBackbagStrategy(Strategy s){
+	public void setCleanBackbagStrategy(OldStrategy s){
 		this.cleanBackbagStratege=s;
 	}
 
@@ -43,12 +43,12 @@ public class SimpleLootPokestopStrategy implements Strategy{
 		}
 
 		if(logger.isDebugEnabled()){
-			String name = Utils.getPokestopDetail(stop) != null ? Utils.getPokestopDetail(stop).getName()
+			String name = OldUtils.getPokestopDetail(stop) != null ? OldUtils.getPokestopDetail(stop).getName()
 					: stop.getId();
 			logger.debug("[Moving] try loot [{}]", name);
 		}
 
-		Utils.sleep(RandomUtils.nextLong(1000, 2000));
+		OldUtils.sleep(RandomUtils.nextLong(1000, 2000));
 		PokestopLootResult result = loot(stop);
 		showPokestopLootResult(result);
 
@@ -57,7 +57,7 @@ public class SimpleLootPokestopStrategy implements Strategy{
 		}
 
 		if (!result.wasSuccessful()) {
-			String name = Utils.getPokestopDetail(stop)!=null ? Utils.getPokestopDetail(stop).getName()
+			String name = OldUtils.getPokestopDetail(stop)!=null ? OldUtils.getPokestopDetail(stop).getName()
 					: stop.getId();
 
 			logger.warn("[Loot] Failed to loot [{}]; add it to error history. result:{}", name, result.getResult());
@@ -71,7 +71,7 @@ public class SimpleLootPokestopStrategy implements Strategy{
 		}
 
 		if (result.getResult() == FortSearchResponse.Result.IN_COOLDOWN_PERIOD){
-			String name = Utils.getPokestopDetail(stop)!=null ? Utils.getPokestopDetail(stop).getName()
+			String name = OldUtils.getPokestopDetail(stop)!=null ? OldUtils.getPokestopDetail(stop).getName()
 					: stop.getId();
 
 			logger.warn("[Loot] at [{}] a cooling down pokestop. someting wrong between server and logal pokemonapi", name);
@@ -136,7 +136,7 @@ public class SimpleLootPokestopStrategy implements Strategy{
 
 				logger.warn("[Loot] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 
@@ -163,7 +163,7 @@ public class SimpleLootPokestopStrategy implements Strategy{
 		while (true) {
 			try {
 				mapObjects = go.getMap().getMapObjects();
-				Utils.updateDetails(mapObjects.getPokestops());
+				OldUtils.updateDetails(mapObjects.getPokestops());
 				break;
 			} catch (LoginFailedException e) {
 				logger.error(e.getMessage(), e);
@@ -179,7 +179,7 @@ public class SimpleLootPokestopStrategy implements Strategy{
 
 				logger.warn("[Walking] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 

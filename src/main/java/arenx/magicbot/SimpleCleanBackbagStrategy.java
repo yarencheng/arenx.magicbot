@@ -19,7 +19,7 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 import POGOProtos.Networking.Responses.RecycleInventoryItemResponseOuterClass.RecycleInventoryItemResponse;
 
-public class SimpleCleanBackbagStrategy implements Strategy{
+public class SimpleCleanBackbagStrategy implements OldStrategy{
 
 	private static Logger logger = LoggerFactory.getLogger(SimpleCleanBackbagStrategy.class);
 	private PokemonGo go;
@@ -40,7 +40,7 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 	private void refreshInventories() {
 		int retry = 1;
 
-		Utils.sleep(1000);
+		OldUtils.sleep(1000);
 
 		while (retry <= Config.instance.getMaxRetryWhenServerError()) {
 			try {
@@ -49,7 +49,7 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 			} catch (Exception e) {
 				logger.warn("[CleanBackbag] Faile to get Inventories; retry {}/{}", retry,
 						Config.instance.getMaxRetryWhenServerError());
-				Utils.sleep(RandomUtils.nextLong(2000, 5000));
+				OldUtils.sleep(RandomUtils.nextLong(2000, 5000));
 			}
 			retry++;
 		}
@@ -228,12 +228,12 @@ public class SimpleCleanBackbagStrategy implements Strategy{
 						logger.error("[CleanBackbag] Failed to recycle remove:{} count:{} {}", e.getKey(), e.getValue(), r);
 						break;
 					}
-					Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+					OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 					break;
 				} catch (Exception e1) {
 					logger.warn("[CleanBackbag] Faile to remove item:{} count: {}; retry {}/{}", e.getKey(), e.getValue(), retry,
 							Config.instance.getMaxRetryWhenServerError());
-					Utils.sleep(RandomUtils.nextLong(2000, 5000));
+					OldUtils.sleep(RandomUtils.nextLong(2000, 5000));
 				}
 				retry++;
 			}

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+	<network>
+		<!-- TODO -->
+	</network>
+	
+	<globaleSettings>
+		<minutesToPlay>1</minutesToPlay>
+		<numberOfBot>2</numberOfBot>
+	</globaleSettings>
+
+	<accounts>
+		<account>
+			<username></username>
+			<password></password>
+		</account>
+		<account>
+			<username></username>
+			<password></password>
+		</account>
+	</accounts>
+	
+	<Bot>
+		
+	</Bot>
+	
+	<shortestLurePathMoveStrategy>
+		<defaultLoaction>
+			<latitude>25.042087</latitude>
+			<longitude>121.544228</longitude>
+			<altitude>5</altitude>
+		</defaultLoaction>
+		<speedMeterPerSecond>2</speedMeterPerSecond>
+	</shortestLurePathMoveStrategy>
+
+	<simpleBackbagStrategy>
+		<maxBallToKeep>120</maxBallToKeep>
+		<maxReviveToKeep>10</maxReviveToKeep>
+		<maxPotionToKeep>10</maxPotionToKeep>
+		<maxBerryToKeep>120</maxBerryToKeep>
+	</simpleBackbagStrategy>
+	
+</configuration>

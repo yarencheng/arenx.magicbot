@@ -20,17 +20,17 @@ import com.pokegoapi.util.PokeNames;
 
 import POGOProtos.Data.PokemonDataOuterClass.PokemonData;
 
-public class SimplePokemonEncounterStrategy implements Strategy{
+public class SimplePokemonEncounterStrategy implements OldStrategy{
 
 	private static Logger logger = LoggerFactory.getLogger(SimplePokemonEncounterStrategy.class);
 	private PokemonGo go;
-	private Strategy informationStrategy;
+	private OldStrategy informationStrategy;
 
 	public SimplePokemonEncounterStrategy(PokemonGo go){
 		this.go=go;
 	}
 
-	public void setInformationStrategy(Strategy s){
+	public void setInformationStrategy(OldStrategy s){
 		informationStrategy = s;
 	}
 
@@ -73,7 +73,7 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 
 			catchPokemon(er.getPokemonData(), mon);
 
-			Utils.sleep(1000);
+			OldUtils.sleep(1000);
 		});
 
 	}
@@ -100,7 +100,7 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 
 				logger.warn("[Encounter] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 		return er;
@@ -125,7 +125,7 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 							PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
 							PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH));
 
-					Utils.sleep(1000);
+					OldUtils.sleep(1000);
 
 					if (data.getCp()>1000){
 						cr = mon.catchPokemonWithRazzBerry();
@@ -150,7 +150,7 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 
 					logger.warn("[Encounter] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 							retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-					Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+					OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 				} catch (NoSuchItemException e) {
 					logger.warn("[Encounter] Failed to catch since out of balls. {}", e.getMessage());
 					return;
@@ -253,7 +253,7 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 
 				logger.warn("[Encounter] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
 						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
-				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+				OldUtils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
 			}
 		}
 
