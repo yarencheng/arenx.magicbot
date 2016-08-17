@@ -1,6 +1,9 @@
 package arenx.magicbot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -9,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.auth.GoogleUserCredentialProvider;
 import com.pokegoapi.auth.PtcCredentialProvider;
+import com.pokegoapi.exceptions.AsyncPokemonGoException;
+import com.pokegoapi.exceptions.LoginFailedException;
 
 import okhttp3.OkHttpClient;
 
@@ -26,10 +31,44 @@ public class Main2 {
 	private Strategy levelUpStrategy;
 
 	public static void main(String[] argv) {
-		try {
-			new Main2();
-		} catch (Throwable e) {
-			logger.error("Someting gose wrong", e);
+
+		Main2 main = null;
+
+		List<Long> loginFailedException_time_listt = new ArrayList<Long>();
+
+		while(true) {
+			try {
+				main = new Main2();
+			} catch (Throwable e) {
+				if (e instanceof AsyncPokemonGoException &&
+						e.getCause() instanceof RuntimeException &&
+						e.getCause().getCause() instanceof ExecutionException &&
+						e.getCause().getCause().getCause() instanceof LoginFailedException) {
+					LoginFailedException le = (LoginFailedException) e.getCause().getCause().getCause();
+					if (le.getMessage().contains("Invalid Auth status code recieved, token not refreshed?")){
+						logger.warn("Got LoginFailedException", e);
+
+						long time = System.currentTimeMillis();
+						loginFailedException_time_listt.add(time);
+
+						if (loginFailedException_time_listt.size() >= 5) {
+							if (time - loginFailedException_time_listt.get(0) < 30 * 60 *1000) {
+								logger.error("Got LoginFailedException 5 times in last 30min");
+								break;
+							}else {
+								while (time - loginFailedException_time_listt.get(0) > 30 * 60 *1000) {
+									loginFailedException_time_listt.remove(0);
+								}
+							}
+						}
+
+						main.SaveCurrentState();
+
+						Utils.sleep(5*1000);
+					}
+				}
+				logger.error("Someting gose wrong", e);
+			}
 		}
 
 	}
