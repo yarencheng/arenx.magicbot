@@ -54,7 +54,7 @@ public class Main2 {
 						if (loginFailedException_time_listt.size() >= 5) {
 							if (time - loginFailedException_time_listt.get(0) < 30 * 60 *1000) {
 								logger.error("Got LoginFailedException 5 times in last 30min");
-								break;
+								return;
 							}else {
 								while (time - loginFailedException_time_listt.get(0) > 30 * 60 *1000) {
 									loginFailedException_time_listt.remove(0);
