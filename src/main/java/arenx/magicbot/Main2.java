@@ -66,10 +66,11 @@ public class Main2 {
 
 						Utils.sleep(5*60*1000);
 					}
-				}
+				} else {
 
-				logger.error("Someting gose wrong", e);
-				throw e;
+					logger.error("Someting gose wrong", e);
+					throw e;
+				}
 			}
 		}
 
