@@ -14,6 +14,7 @@ import com.pokegoapi.auth.GoogleUserCredentialProvider;
 import com.pokegoapi.auth.PtcCredentialProvider;
 import com.pokegoapi.exceptions.AsyncPokemonGoException;
 import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.RemoteServerException;
 
 import okhttp3.OkHttpClient;
 
@@ -43,7 +44,8 @@ public class Main2 {
 				if (e instanceof AsyncPokemonGoException &&
 						e.getCause() instanceof RuntimeException &&
 						e.getCause().getCause() instanceof ExecutionException &&
-						e.getCause().getCause().getCause() instanceof LoginFailedException) {
+						(e.getCause().getCause().getCause() instanceof LoginFailedException || e.getCause().getCause().getCause() instanceof RemoteServerException)
+						) {
 					LoginFailedException le = (LoginFailedException) e.getCause().getCause().getCause();
 					if (le.getMessage().contains("Invalid Auth status code recieved, token not refreshed?") ||
 							le.getMessage().contains("Your account may be banned! please try from the official client.")){
@@ -66,12 +68,15 @@ public class Main2 {
 						main.SaveCurrentState();
 
 						Utils.sleep(5*60*1000);
-					}
-				} else {
+						logger.warn("restart");
 
-					logger.error("Someting gose wrong", e);
-					throw e;
+						continue;
+					}
 				}
+
+				logger.error("Someting gose wrong", e);
+				throw e;
+
 			}
 		}
 
