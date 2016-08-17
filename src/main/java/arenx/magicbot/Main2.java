@@ -67,7 +67,9 @@ public class Main2 {
 						Utils.sleep(5*60*1000);
 					}
 				}
+
 				logger.error("Someting gose wrong", e);
+				throw e;
 			}
 		}
 
