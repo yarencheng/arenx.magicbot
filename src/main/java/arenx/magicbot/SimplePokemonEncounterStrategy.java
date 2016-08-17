@@ -103,10 +103,10 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 	public void catchPokemon(PokemonData data, CatchablePokemon mon){
 
 		if (catchPokemon_errorStatus_history.contains(data.getId())) {
-			logger.warn("[Encounter] skip to catch #{}{}({}) since this pokemon({}) has an error record in the history.", mon.getPokemonId().getNumber(),
+			logger.warn("[Encounter] skip to catch #{}{}({}) since this encounter({}) has an error record in the history.", mon.getPokemonId().getNumber(),
 					PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
 					PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH),
-					data.getId());
+					mon.getEncounterId());
 			return;
 		}
 
@@ -159,11 +159,11 @@ public class SimplePokemonEncounterStrategy implements Strategy{
 
 			switch (cr.getStatus()) {
 			case CATCH_ERROR:
-				logger.warn("[Encounter] get error status after trying to catch #{}{}({}); record this pokemon({}) in error history",
+				logger.warn("[Encounter] get error status after trying to catch #{}{}({}); record this encouter({}) in error history",
 						mon.getPokemonId().getNumber(),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), new Locale("zh", "CN")),
 						PokeNames.getDisplayName(mon.getPokemonId().getNumber(), Locale.ENGLISH),
-						data.getId());
+						mon.getEncounterId());
 
 				catchPokemon_errorStatus_history.add(data.getId());
 
