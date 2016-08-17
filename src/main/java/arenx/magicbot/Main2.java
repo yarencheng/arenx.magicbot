@@ -51,7 +51,7 @@ public class Main2 {
 						long time = System.currentTimeMillis();
 						loginFailedException_time_listt.add(time);
 
-						if (loginFailedException_time_listt.size() >= 5) {
+						if (loginFailedException_time_listt.size() >= 4) {
 							if (time - loginFailedException_time_listt.get(0) < 30 * 60 *1000) {
 								logger.error("Got LoginFailedException 5 times in last 30min");
 								return;
@@ -64,7 +64,7 @@ public class Main2 {
 
 						main.SaveCurrentState();
 
-						Utils.sleep(5*1000);
+						Utils.sleep(5*60*1000);
 					}
 				}
 				logger.error("Someting gose wrong", e);
