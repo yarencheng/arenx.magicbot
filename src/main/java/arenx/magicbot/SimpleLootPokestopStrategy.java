@@ -114,26 +114,30 @@ public class SimpleLootPokestopStrategy implements Strategy{
 	private int duplicate_loot_count=0;
 
 	private PokestopLootResult loot(Pokestop stop) {
-		int retry = 1;
 
 		PokestopLootResult result = null;
 
-		while (retry <= Config.instance.getMaxRetryWhenServerError()) {
+		int retry = 0;
+		while(true){
 			try {
 				result = stop.loot();
 				break;
-			} catch (Exception e) {
-				logger.warn("Faile to loot; retry {}/{}", retry,
-						Config.instance.getMaxRetryWhenServerError());
-				Utils.sleep(RandomUtils.nextLong(2000, 5000));
-			}
-			retry++;
-		}
+			} catch (LoginFailedException e) {
+				logger.error(e.getMessage(), e);
+				throw new RuntimeException(e);
+			} catch (RemoteServerException e) {
+				if (retry >= Config.instance.getMaxRetryWhenServerError()) {
+					String message = "[Loot] Failed to loot";
+					logger.error(message, e);
+					throw new RuntimeException(message, e);
+				}
 
-		if (retry == Config.instance.getMaxRetryWhenServerError()) {
-			String m = "Failed to get player data";
-			logger.error(m);
-			throw new RuntimeException(m);
+				retry++;
+
+				logger.warn("[Loot] Failed to get response from remote server. Retry {}/{}. Caused by: {}",
+						retry, Config.instance.getMaxRetryWhenServerError(), e.getMessage());
+				Utils.sleep(Config.instance.getDelayMsBetweenApiRequestRetry());
+			}
 		}
 
 		if (previousStop!=null && previousStop.getId().equals(stop.getId())){
