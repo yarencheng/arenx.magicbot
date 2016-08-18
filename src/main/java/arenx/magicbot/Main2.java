@@ -46,30 +46,26 @@ public class Main2 {
 						e.getCause().getCause() instanceof ExecutionException &&
 						(e.getCause().getCause().getCause() instanceof LoginFailedException || e.getCause().getCause().getCause() instanceof RemoteServerException)
 						) {
-					Throwable t = e.getCause().getCause().getCause();
-					if (t.getMessage().contains("Invalid Auth status code recieved, token not refreshed?") ||
-							t.getMessage().contains("Your account may be banned! please try from the official client.")){
-						logger.warn("Got LoginFailedException or RemoteServerException", e);
+					logger.warn("Got LoginFailedException or RemoteServerException", e);
 
-						long time = System.currentTimeMillis();
-						loginFailedException_time_listt.add(time);
+					long time = System.currentTimeMillis();
+					loginFailedException_time_listt.add(time);
 
-						if (loginFailedException_time_listt.size() >= 4) {
-							if (time - loginFailedException_time_listt.get(0) < 30 * 60 *1000) {
-								logger.error("Got LoginFailedException 5 times in last 30min");
-								return;
-							}else {
-								while (time - loginFailedException_time_listt.get(0) > 30 * 60 *1000) {
-									loginFailedException_time_listt.remove(0);
-								}
+					if (loginFailedException_time_listt.size() >= 4) {
+						if (time - loginFailedException_time_listt.get(0) < 30 * 60 *1000) {
+							logger.error("Got LoginFailedException 5 times in last 30min");
+							return;
+						}else {
+							while (time - loginFailedException_time_listt.get(0) > 30 * 60 *1000) {
+								loginFailedException_time_listt.remove(0);
 							}
 						}
-
-						Utils.sleep(5*60*1000);
-						logger.warn("restart");
-
-						continue;
 					}
+
+					Utils.sleep(5*60*1000);
+					logger.warn("restart");
+
+					continue;
 				}
 
 				logger.error("Someting gose wrong", e);
