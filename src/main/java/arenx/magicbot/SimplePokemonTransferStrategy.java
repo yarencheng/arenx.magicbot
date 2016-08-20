@@ -33,7 +33,8 @@ public class SimplePokemonTransferStrategy implements Strategy{
 
 		pokeBank.getPokemons()
 			.stream()
-			.filter(mon->mon.getLevel()<20)
+			.filter(mon->mon.getCp()<1500)
+			.filter(mon->mon.getLevel()<23)
 			.forEach(mon->{
 
 				logger.debug("[Transfer] #{}{}({}) - try to transfer", mon.getPokemonId().getNumber(),
