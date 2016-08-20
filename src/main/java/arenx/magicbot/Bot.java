@@ -2,6 +2,7 @@ package arenx.magicbot;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -24,10 +25,14 @@ import org.springframework.stereotype.Component;
 
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
+import com.pokegoapi.api.map.pokemon.CatchResult;
+import com.pokegoapi.api.map.pokemon.CatchablePokemon;
+import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
 
 import POGOProtos.Data.PlayerDataOuterClass.PlayerData;
 import POGOProtos.Inventory.Item.ItemAwardOuterClass.ItemAward;
 import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
+import POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus;
 import POGOProtos.Networking.Responses.RecycleInventoryItemResponseOuterClass.RecycleInventoryItemResponse;
 import arenx.magicbot.bean.Location;
 
@@ -81,13 +86,15 @@ public class Bot {
 			roundCount++;
 			logger.debug("[Bot] ============= new round #{} =============", roundCount);
 
+			encounterPokemons();
+
 			Map<ItemId, Integer> items = backbagStrategy.getTobeRemovedItem();
 			removeItems(items);
 
 			Location l = moveStrategy.nextLocation();
 			go.get().setLocation(l.getLatitude(), l.getLongitude(), l.getAltitude());
 
-			loot();
+			lootPokestop();
 
 			Utils.sleep(RandomUtils.nextLong(1000, 2000));
 
@@ -213,7 +220,7 @@ public class Bot {
 	private TreeMap<String, Long> error_loot_stop = new TreeMap<>();
 	private TreeMap<String, Long> success_loot_stop = new TreeMap<>();
 
-	private void loot(){
+	private void lootPokestop(){
 
 		Utils.getMapObjects(go.get())
 			.getPokestops()
@@ -290,6 +297,96 @@ public class Bot {
 
 			});
 
+	}
+
+	private void encounterPokemons(){
+		Utils.getCatchablePokemon(go.get())
+			.stream()
+			.map(mon->{
+
+				logger.debug("[Pokemon] try to encouter #{}{}({})", mon.getPokemonId().getNumber(), Utils.getTranslatedPokemonName(mon), Utils.getPokemonName(mon));
+
+				EncounterResult r = Utils.encouter(mon);
+
+				return new SimpleEntry<CatchablePokemon, EncounterResult>(mon , r);
+			})
+			.filter(e->{
+
+				if(e.getValue().wasSuccessful()){
+					return true;
+				}
+
+				switch(e.getValue().getStatus()){
+				case ENCOUNTER_ALREADY_HAPPENED:
+					logger.warn("[Pokemon] {} is allready been encoutered", Utils.getPokemonFullName(e.getKey()));
+					return false;
+				case ENCOUNTER_CLOSED:
+					logger.warn("[Pokemon] encouter is closed after try to encounter {}", Utils.getPokemonFullName(e.getKey()));
+					return false;
+				case ENCOUNTER_ERROR:
+					logger.error("[Pokemon] got error after try to encounter {}", Utils.getPokemonFullName(e.getKey()));
+					return false;
+				case ENCOUNTER_NOT_FOUND:
+					logger.warn("[Pokemon] not found after try to encounter {}", Utils.getPokemonFullName(e.getKey()));
+					return false;
+				case ENCOUNTER_NOT_IN_RANGE:
+					logger.warn("[Pokemon] {} is too far", Utils.getPokemonFullName(e.getKey()));
+					return false;
+				case ENCOUNTER_POKEMON_FLED:
+					logger.warn("[Pokemon] {} is fled", Utils.getPokemonFullName(e.getKey()));
+					return false;
+				case ENCOUNTER_SUCCESS:
+					logger.debug("[Pokemon] sucess to encouter {}", Utils.getPokemonFullName(e.getKey()));
+					return true;
+				case POKEMON_INVENTORY_FULL:
+					logger.warn("[Pokemon] invetory is full when try to encouter {}", Utils.getPokemonFullName(e.getKey()));
+					return false;
+				case UNRECOGNIZED:
+				default:
+					logger.error("[Pokemon] got unrecognized error after try to encounter {}", Utils.getPokemonFullName(e.getKey()));
+					return false;
+				}
+			})
+			.map(e->{
+				logger.debug("[Pokemon] try to catch #{}{}({})", e.getKey().getPokemonId().getNumber(), Utils.getTranslatedPokemonName(e.getKey()), Utils.getPokemonName(e.getKey()));
+
+				CatchResult r = Utils.catchPokemonEasy(e.getKey());
+				Utils.sleep(1000);
+
+				int escapeRetryMax = 10;
+				int escapeRetry = 0;
+				while(r.getStatus()==CatchStatus.CATCH_ESCAPE && escapeRetry<escapeRetryMax){
+					escapeRetry++;
+					r = Utils.catchPokemonEasy(e.getKey());
+					Utils.sleep(1000);
+				}
+
+				return new SimpleEntry<CatchablePokemon, CatchResult>(e.getKey() , r);
+			})
+			.forEach(e->{
+				switch(e.getValue().getStatus()){
+				case CATCH_ERROR:
+					logger.error("[Pokemon] got error after try to catch {}", Utils.getPokemonFullName(e.getKey()));
+					return;
+				case CATCH_ESCAPE:
+					logger.info("[Pokemon] {} escaped", Utils.getPokemonFullName(e.getKey()));
+					return;
+				case CATCH_FLEE:
+					logger.info("[Pokemon] {} fled", Utils.getPokemonFullName(e.getKey()));
+					return;
+				case CATCH_MISSED:
+					logger.info("[Pokemon] missed to catch {}", Utils.getPokemonFullName(e.getKey()));
+					return;
+				case CATCH_SUCCESS:
+					logger.info("[Pokemon] catch {}", Utils.getPokemonFullName(e.getKey()));
+					return;
+				case UNRECOGNIZED:
+				default:
+					logger.error("[Pokemon] got unrecognized error after try to catch {}", Utils.getPokemonFullName(e.getKey()));
+					return;
+				}
+			})
+			;
 	}
 
 }

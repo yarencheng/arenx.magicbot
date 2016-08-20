@@ -3,6 +3,7 @@ package arenx.magicbot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
@@ -21,10 +22,15 @@ import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.FortDetails;
 import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
+import com.pokegoapi.api.map.pokemon.CatchResult;
+import com.pokegoapi.api.map.pokemon.CatchablePokemon;
+import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
 import com.pokegoapi.exceptions.AsyncPokemonGoException;
 import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.NoSuchItemException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import com.pokegoapi.google.common.geometry.S2LatLng;
+import com.pokegoapi.util.PokeNames;
 
 import POGOProtos.Data.PlayerDataOuterClass.PlayerData;
 import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
@@ -213,6 +219,50 @@ public class Utils {
 
 	}
 
+	public static List<CatchablePokemon> getCatchablePokemon(PokemonGo go){
+		Validate.notNull(go);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					return go.getMap().getCatchablePokemon();
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to get CatchablePokemon after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+				logger.warn("[Utils] Failed to get CatchablePokemon; sleep 5 sec. and then retry {}/{}", retry, maxRetry);
+				Utils.sleep(5000);
+
+			}
+		}
+
+	}
+
 	public static PlayerData getPlayerData(PokemonGo go){
 		Validate.notNull(go);
 
@@ -346,6 +396,144 @@ public class Utils {
 
 	}
 
+	public static EncounterResult encouter(CatchablePokemon  mon){
+		Validate.notNull(mon);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					return mon.encounterPokemon();
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to encounter "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+				logger.warn("[Utils] Failed to encounter {}; sleep 5 sec. and then retry {}/{}", Utils.getPokemonFullName(mon), retry, maxRetry);
+				Utils.sleep(5000);
+
+			}
+		}
+
+	}
+
+	public static CatchResult catchPokemonEasy(CatchablePokemon  mon){
+		Validate.notNull(mon);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					return mon.catchPokemon();
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				} catch (NoSuchItemException e) {
+					logger.warn("[Utils] no item to catch "+getPokemonFullName(mon), e);
+					return null;
+				}
+
+			} catch (LoginFailedException | RemoteServerException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to encounter "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+				logger.warn("[Utils] Failed to encounter {}; sleep 5 sec. and then retry {}/{}", Utils.getPokemonFullName(mon), retry, maxRetry);
+				Utils.sleep(5000);
+
+			}
+		}
+
+	}
+
+	public static CatchResult catchPokemonHard(CatchablePokemon  mon){
+		Validate.notNull(mon);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					return mon.catchPokemonWithBestBall(true, 1, 1);
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				} catch (NoSuchItemException e) {
+					logger.warn("[Utils] no item to catch "+getPokemonFullName(mon), e);
+					return null;
+				}
+
+			} catch (LoginFailedException | RemoteServerException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to encounter "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+				logger.warn("[Utils] Failed to encounter {}; sleep 5 sec. and then retry {}/{}", Utils.getPokemonFullName(mon), retry, maxRetry);
+				Utils.sleep(5000);
+
+			}
+		}
+
+	}
+
 	public static RecycleInventoryItemResponse.Result removeItem(PokemonGo go, ItemId id, int quantity){
 		Validate.notNull(go);
 		Validate.notNull(id);
@@ -391,6 +579,29 @@ public class Utils {
 
 			}
 		}
+	}
 
+	public static String getTranslatedPokemonName(int number){
+		return PokeNames.getDisplayName(number,Locale.TAIWAN);
+	}
+
+	public static String getTranslatedPokemonName(CatchablePokemon mon){
+		return getTranslatedPokemonName(mon.getPokemonId().getNumber());
+	}
+
+	public static String getPokemonName(int number){
+		return PokeNames.getDisplayName(number, Locale.ENGLISH);
+	}
+
+	public static String getPokemonName(CatchablePokemon mon){
+		return getTranslatedPokemonName(mon.getPokemonId().getNumber());
+	}
+
+	public static String getPokemonFullName(int number){
+		return "#"+number+getTranslatedPokemonName(number)+"(" + getPokemonName(number) +")";
+	}
+
+	public static String getPokemonFullName(CatchablePokemon mon){
+		return getPokemonFullName(mon.getPokemonId().getNumber());
 	}
 }
