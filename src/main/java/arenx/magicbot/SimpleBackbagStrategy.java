@@ -41,6 +41,8 @@ public class SimpleBackbagStrategy implements BackbagStrategy {
 		int all = itemBag.getItems().stream()
 				.mapToInt(item -> item.getCount()).sum();
 
+		logger.debug("[BackbagStrategy] {}/{} items in backbag", all, Utils.getPlayerData(go.get()).getMaxItemStorage());
+
 		if (all < 340) {
 			return removeItems;
 		}

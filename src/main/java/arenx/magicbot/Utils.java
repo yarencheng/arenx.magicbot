@@ -267,6 +267,7 @@ public class Utils {
 			try {
 
 				try {
+					go.getInventories().updateInventories();
 					return go.getInventories();
 				} catch (AsyncPokemonGoException e) {
 					if (!(e.getCause() instanceof RuntimeException)){
