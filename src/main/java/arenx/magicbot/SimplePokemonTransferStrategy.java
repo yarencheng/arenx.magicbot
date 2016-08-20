@@ -33,7 +33,6 @@ public class SimplePokemonTransferStrategy implements Strategy{
 
 		pokeBank.getPokemons()
 			.stream()
-			.filter(mon->mon.getIvRatio()<0.8)
 			.filter(mon->mon.getLevel()<20)
 			.forEach(mon->{
 
