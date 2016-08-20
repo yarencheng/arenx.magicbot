@@ -24,6 +24,7 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
 import com.pokegoapi.api.PokemonGo;
+import com.pokegoapi.api.inventory.PokeBank;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
@@ -34,6 +35,7 @@ import POGOProtos.Inventory.Item.ItemAwardOuterClass.ItemAward;
 import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 import POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus;
 import POGOProtos.Networking.Responses.RecycleInventoryItemResponseOuterClass.RecycleInventoryItemResponse;
+import POGOProtos.Networking.Responses.ReleasePokemonResponseOuterClass.ReleasePokemonResponse;
 import arenx.magicbot.bean.Location;
 
 @Component
@@ -85,6 +87,8 @@ public class Bot {
 		while(!isStoped){
 			roundCount++;
 			logger.debug("[Bot] ============= new round #{} =============", roundCount);
+
+			transferPokemon();
 
 			encounterPokemons();
 
@@ -387,6 +391,43 @@ public class Bot {
 				}
 			})
 			;
+	}
+
+	public void transferPokemon(){
+		PokeBank pb = Utils.getPokeBank(go.get());
+
+		pb.getPokemons()
+			.stream()
+			.filter(mon->mon.getCp()<1500)
+			.filter(mon->mon.getLevel()<22)
+			.forEach(mon->{
+
+				logger.debug("[Pokemon] try to transfer {}", Utils.getPokemonFullName(mon));
+
+				ReleasePokemonResponse.Result r = Utils.transferPokemon(mon);
+
+				switch(r){
+				case ERROR_POKEMON_IS_EGG:
+					logger.error("[Pokemon] {} is egg and can't be trnasferd", Utils.getPokemonFullName(mon));
+					return;
+				case FAILED:
+					logger.error("[Pokemon] Failed to transfer {}", Utils.getPokemonFullName(mon));
+					return;
+				case POKEMON_DEPLOYED:
+					logger.error("[Pokemon] {} is deployed and can't be trnasferd", Utils.getPokemonFullName(mon));
+					return;
+				case SUCCESS:
+					logger.info("[Pokemon] {} is transferd successfully", Utils.getPokemonFullName(mon));
+					return;
+				case UNRECOGNIZED:
+				case UNSET:
+				default:
+					logger.error("[Pokemon] Gots unrecognized erro after transfering {}", Utils.getPokemonFullName(mon));
+					return;
+
+				}
+
+			});
 	}
 
 }

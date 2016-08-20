@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.inventory.Inventories;
 import com.pokegoapi.api.inventory.ItemBag;
+import com.pokegoapi.api.inventory.PokeBank;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.FortDetails;
 import com.pokegoapi.api.map.fort.Pokestop;
@@ -25,6 +26,7 @@ import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
 import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
+import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.AsyncPokemonGoException;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.NoSuchItemException;
@@ -35,6 +37,7 @@ import com.pokegoapi.util.PokeNames;
 import POGOProtos.Data.PlayerDataOuterClass.PlayerData;
 import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 import POGOProtos.Networking.Responses.RecycleInventoryItemResponseOuterClass.RecycleInventoryItemResponse;
+import POGOProtos.Networking.Responses.ReleasePokemonResponseOuterClass.ReleasePokemonResponse;
 import arenx.magicbot.bean.Location;
 
 public class Utils {
@@ -352,6 +355,51 @@ public class Utils {
 
 	}
 
+	public static PokeBank getPokeBank(PokemonGo go){
+		Validate.notNull(go);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					go.getInventories().updateInventories();
+					return go.getInventories().getPokebank();
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to get PokeBank after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+				logger.warn("[Utils] Failed to get PokeBank; sleep 5 sec. and then retry {}/{}", retry, maxRetry);
+				Utils.sleep(5000);
+
+			}
+		}
+
+	}
+
 	public static PokestopLootResult loot(Pokestop stop){
 		Validate.notNull(stop);
 
@@ -433,6 +481,50 @@ public class Utils {
 
 				retry ++;
 				logger.warn("[Utils] Failed to encounter {}; sleep 5 sec. and then retry {}/{}", Utils.getPokemonFullName(mon), retry, maxRetry);
+				Utils.sleep(5000);
+
+			}
+		}
+
+	}
+
+	public static ReleasePokemonResponse.Result transferPokemon(Pokemon mon){
+		Validate.notNull(mon);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					return mon.transferPokemon();
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to transfer "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+				logger.warn("[Utils] Failed to transfer {}; sleep 5 sec. and then retry {}/{}", Utils.getPokemonFullName(mon), retry, maxRetry);
 				Utils.sleep(5000);
 
 			}
@@ -589,6 +681,10 @@ public class Utils {
 		return getTranslatedPokemonName(mon.getPokemonId().getNumber());
 	}
 
+	public static String getTranslatedPokemonName(Pokemon mon){
+		return getTranslatedPokemonName(mon.getPokemonId().getNumber());
+	}
+
 	public static String getPokemonName(int number){
 		return PokeNames.getDisplayName(number, Locale.ENGLISH);
 	}
@@ -597,11 +693,19 @@ public class Utils {
 		return getTranslatedPokemonName(mon.getPokemonId().getNumber());
 	}
 
+	public static String getPokemonName(Pokemon mon){
+		return getTranslatedPokemonName(mon.getPokemonId().getNumber());
+	}
+
 	public static String getPokemonFullName(int number){
 		return "#"+number+getTranslatedPokemonName(number)+"(" + getPokemonName(number) +")";
 	}
 
 	public static String getPokemonFullName(CatchablePokemon mon){
+		return getPokemonFullName(mon.getPokemonId().getNumber());
+	}
+
+	public static String getPokemonFullName(Pokemon mon){
 		return getPokemonFullName(mon.getPokemonId().getNumber());
 	}
 }
