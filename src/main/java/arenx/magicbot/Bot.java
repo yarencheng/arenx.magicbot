@@ -325,6 +325,9 @@ public class Bot {
 			config.setProperty(pd.getUsername()+".longitude", l.getLongitude());
 			config.setProperty(pd.getUsername()+".altitude", l.getAltitude());
 
+			long secondUsed = (System.currentTimeMillis() - startTime) / 1000;
+			config.setProperty(pd.getUsername()+".secondUsed", secondUsed);
+
 			try {
 				configBuilder.save();
 			} catch (ConfigurationException e) {
@@ -368,6 +371,12 @@ public class Bot {
 			moveStrategy.setCurrentLocation(l);
 		}
 
+		if (properties.containsKey(pd.getUsername()+".secondUsed")) {
+			long secondUsed = Long.parseLong(properties.getProperty(pd.getUsername()+".secondUsed"));
+			long t = startTime;
+			startTime -= secondUsed*1000;
+			logger.info("[Bot] secondUsed:{} startTime:{}->{}", secondUsed, t, startTime);
+		}
 	}
 
 	// key=Pokestop.getId() value=time
