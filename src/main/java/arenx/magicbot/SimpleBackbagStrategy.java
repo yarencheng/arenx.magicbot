@@ -59,7 +59,7 @@ public class SimpleBackbagStrategy implements BackbagStrategy {
 				.filter(item -> !ids_revive.contains(item.getItemId()))
 				.filter(item -> item.getItemId() != ItemId.ITEM_LUCKY_EGG)
 				.filter(item -> item.getItemId() != ItemId.ITEM_INCUBATOR_BASIC_UNLIMITED)
-				.filter(item -> item.getItemId() != ItemId.ITEM_INCUBATOR_BASIC_UNLIMITED)
+				.filter(item -> item.getItemId() != ItemId.ITEM_INCUBATOR_BASIC)
 				.filter(item -> item.getItemId() != ItemId.ITEM_SPECIAL_CAMERA)
 				.filter(item -> item.getItemId() != ItemId.ITEM_INCENSE_ORDINARY)
 				.forEach(item -> {

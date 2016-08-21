@@ -33,6 +33,7 @@ import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
 import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
+import com.pokegoapi.api.player.PlayerLevelUpRewards;
 
 import POGOProtos.Data.PlayerDataOuterClass.PlayerData;
 import POGOProtos.Inventory.Item.ItemAwardOuterClass.ItemAward;
@@ -46,11 +47,14 @@ import arenx.magicbot.bean.Location;
 public class Bot {
 
 	private static Logger logger = LoggerFactory.getLogger(Bot.class);
+	public static final Object state_data_lock = new Object();
 
 	private HierarchicalConfiguration<ImmutableNode> config;
 	private boolean isShutdown = false;
 	private long roundCount = 0;
 	private long startTime;
+	private int currentLevel;
+
 
 	@Autowired
 	private MoveStrategy moveStrategy;
@@ -96,6 +100,8 @@ public class Bot {
 		go.get().setLongitude(lastLocation.getLongitude());
 		go.get().setAltitude(lastLocation.getAltitude());
 
+		currentLevel = Utils.getStats(go.get()).getLevel();
+
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
@@ -108,6 +114,7 @@ public class Bot {
 			logger.debug("[Bot] ============= new round #{} =============", roundCount);
 
 			informationStrategy.showStatus();
+			checkLevelup();
 
 			transferPokemon();
 
@@ -123,7 +130,7 @@ public class Bot {
 			Location l = moveStrategy.nextLocation();
 			go.get().setLocation(l.getLatitude(), l.getLongitude(), l.getAltitude());
 
-			if (lootedPokestopCount.get() >= config.getLong("maxPokestopToLoot")) {
+			if (lootedPokestopCount.get() < config.getLong("maxPokestopToLoot")) {
 				lootPokestop();
 			} else {
 				logger.debug("[Pokemon] Reach max. number({}) of looted pokestops. Stop looting pokestop.", lootedPokestopCount.get());
@@ -147,6 +154,47 @@ public class Bot {
 		storeState();
 
 		isShutdown= true;
+	}
+
+	private void checkLevelup(){
+
+		int newLevel = Utils.getStats(go.get()).getLevel();
+
+		logger.debug("[Level] current lv:{}, new lv:{}", currentLevel, newLevel);
+
+		if (currentLevel >= newLevel) {
+			return;
+		}
+
+		PlayerLevelUpRewards rewards = Utils.acceptLevelUpRewards(go.get(), newLevel);
+
+		switch(rewards.getStatus()){
+		case ALREADY_ACCEPTED:
+			logger.warn("[Level] rewarded items of level {} are allread accepted", newLevel);
+			break;
+		case NEW:
+			currentLevel = newLevel;
+
+			logger.info("[Level] Level up to {}", currentLevel);
+
+			rewards.getRewards().stream().forEach(item->{
+				logger.info("[Level] Got {} {}", item.getItemCount(), item.getItemId());
+
+			});
+
+			Utils.checkAndEquipBadges(go.get());
+
+			break;
+		case NOT_UNLOCKED_YET:
+			logger.warn("[Level] rewarded items of level {} are not unlocked yet", newLevel);
+			break;
+		default:
+			logger.warn("[Level] Got unknown error while acceptLevelUpRewards()");
+			break;
+
+		}
+
+
 	}
 
 	public void removeItems(Map<ItemId, Integer> items){
@@ -177,8 +225,6 @@ public class Bot {
 			}
 		});
 	}
-
-	public static final Object state_data_lock = new Object();
 
 	public void storeState(){
 		logger.info("[Bot] store data");
@@ -347,7 +393,7 @@ public class Bot {
 			.stream()
 			.map(mon->{
 
-				logger.debug("[Pokemon] try to encouter #{}{}({})", mon.getPokemonId().getNumber(), Utils.getTranslatedPokemonName(mon), Utils.getPokemonName(mon));
+				logger.debug("[Pokemon] try to encouter {}", Utils.getPokemonFullName(mon));
 
 				EncounterResult r = Utils.encouter(mon);
 

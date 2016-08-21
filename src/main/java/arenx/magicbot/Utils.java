@@ -28,6 +28,7 @@ import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
 import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
+import com.pokegoapi.api.player.PlayerLevelUpRewards;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.AsyncPokemonGoException;
 import com.pokegoapi.exceptions.LoginFailedException;
@@ -368,6 +369,7 @@ public class Utils {
 			try {
 
 				try {
+					go.getPlayerProfile().updateProfile();
 					return go.getPlayerProfile().getStats();
 				} catch (AsyncPokemonGoException e) {
 					if (!(e.getCause() instanceof RuntimeException)){
@@ -857,6 +859,116 @@ public class Utils {
 
 				if (e instanceof RemoteServerException) {
 					logger.warn("[Utils] Failed to remove {}; sleep {} sec. and then retry {}/{}", id, secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
+
+			}
+		}
+	}
+
+	public static PlayerLevelUpRewards acceptLevelUpRewards(PokemonGo go, int level){
+		Validate.notNull(go);
+		Validate.isTrue(level>0);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					return go.getPlayerProfile().acceptLevelUpRewards(level);
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to get PlayerLevelUpRewards after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to get PlayerLevelUpRewards; sleep {} sec. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to get PlayerLevelUpRewards; sleep {} sec. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
+
+			}
+		}
+	}
+
+	public static void checkAndEquipBadges(PokemonGo go){
+		Validate.notNull(go);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					go.getPlayerProfile().checkAndEquipBadges();
+					return;
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to get PlayerLevelUpRewards after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to get PlayerLevelUpRewards; sleep {} sec. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to get PlayerLevelUpRewards; sleep {} sec. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
 					Utils.sleep(secondToSleepWhileRemoteServerException);
 				}
 
