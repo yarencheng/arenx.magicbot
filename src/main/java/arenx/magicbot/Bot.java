@@ -110,7 +110,12 @@ public class Bot {
 			informationStrategy.showStatus();
 
 			transferPokemon();
-			encounterPokemons();
+
+			if (catchedPokemonCount.get() < config.getLong("maxPokemonToCatch")) {
+				encounterPokemons();
+			} else {
+				logger.debug("[Pokemon] Reach max. number({}) of catched pokemons. skip catching pokemon.", catchedPokemonCount.get());
+			}
 
 			Map<ItemId, Integer> items = backbagStrategy.getTobeRemovedItem();
 			removeItems(items);
@@ -118,25 +123,23 @@ public class Bot {
 			Location l = moveStrategy.nextLocation();
 			go.get().setLocation(l.getLatitude(), l.getLongitude(), l.getAltitude());
 
-			lootPokestop();
+			if (lootedPokestopCount.get() >= config.getLong("maxPokestopToLoot")) {
+				lootPokestop();
+			} else {
+				logger.debug("[Pokemon] Reach max. number({}) of looted pokestops. Stop looting pokestop.", lootedPokestopCount.get());
+			}
 
 			Utils.sleep(RandomUtils.nextLong(1000, 2000));
 
 			if (System.currentTimeMillis() - startTime > config.getLong("minutesToPlay") * 60 * 1000) {
-				logger.info("[Pokemon] Reach max. time({}) of playing time reached. Stop bot.");
+				logger.info("[Pokemon] Reach max. time({}) of playe. Stop bot.", catchedPokemonCount.get());
 				break;
 			}
 
-			if (catchedPokemonCount.get() >= config.getLong("maxPokemonToCatch")) {
-				logger.info("[Pokemon] Reach max. number({}) of catched pokemons. Stop bot.", catchedPokemonCount.get());
+			if (catchedPokemonCount.get() >= config.getLong("maxPokemonToCatch") &&
+					lootedPokestopCount.get() >= config.getLong("maxPokestopToLoot")) {
 				break;
 			}
-
-			if (lootedPokestopCount.get() >= config.getLong("maxPokestopToLoot")) {
-				logger.info("[Pokemon] Reach max. number({}) of looted pokestops. Stop bot.", lootedPokestopCount.get());
-				break;
-			}
-
 		}
 
 		logger.info("[Bot] prepare to stop");
