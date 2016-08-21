@@ -15,6 +15,7 @@ import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.inventory.Inventories;
 import com.pokegoapi.api.inventory.ItemBag;
@@ -161,10 +162,13 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to get FortDetails after retry " + retry + "/" + maxRetry+" times";
@@ -213,10 +217,13 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to get MapObjects after retry " + retry + "/" + maxRetry+" times";
@@ -265,10 +272,13 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to get CatchablePokemon after retry " + retry + "/" + maxRetry+" times";
@@ -317,10 +327,13 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to get PlayerData after retry " + retry + "/" + maxRetry+" times";
@@ -369,10 +382,13 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to get Stats after retry " + retry + "/" + maxRetry+" times";
@@ -422,10 +438,13 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to get Inventories after retry " + retry + "/" + maxRetry+" times";
@@ -475,10 +494,13 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to get PokeBank after retry " + retry + "/" + maxRetry+" times";
@@ -527,10 +549,13 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to loot "+ Utils.getName(stop)+" after retry " + retry + "/" + maxRetry+" times";
@@ -579,10 +604,13 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to encounter "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
@@ -631,10 +659,13 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to transfer "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
@@ -683,13 +714,16 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				} catch (NoSuchItemException e) {
 					logger.warn("[Utils] no item to catch "+getPokemonFullName(mon), e);
 					return null;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to catch "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
@@ -738,13 +772,16 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				} catch (NoSuchItemException e) {
 					logger.warn("[Utils] no item to catch "+getPokemonFullName(mon), e);
 					return null;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to catch "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
@@ -797,10 +834,13 @@ public class Utils {
 					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
 						throw (RemoteServerException)e.getCause().getCause().getCause();
 					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
 					throw e;
 				}
 
-			} catch (LoginFailedException | RemoteServerException e) {
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
 
 				if (retry>=maxRetry) {
 					String m = "Failed to remove "+id+" after retry " + retry + "/" + maxRetry+" times";
