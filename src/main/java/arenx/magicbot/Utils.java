@@ -43,6 +43,8 @@ import arenx.magicbot.bean.Location;
 public class Utils {
 
 	private static Logger logger = LoggerFactory.getLogger(Utils.class);
+	private static final long secondToSleepWhileRemoteServerException = 60 * 1000;
+	private static final long secondToSleepWhileLoginFailedException = 5 * 60 * 1000;
 
 	public static void sleep(long ms) {
 		try {
@@ -170,8 +172,16 @@ public class Utils {
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to get FortDetails; sleep 5 sec. and then retry {}/{}", retry, maxRetry);
-				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to get FortDetails; sleep {} ms. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to get FortDetails; sleep {} ms. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
@@ -214,8 +224,16 @@ public class Utils {
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to get MapObjects; sleep 5 sec. and then retry {}/{}", retry, maxRetry);
-				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to get MapObjects; sleep {} ms. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to get MapObjects; sleep {} ms. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
@@ -258,8 +276,16 @@ public class Utils {
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to get CatchablePokemon; sleep 5 sec. and then retry {}/{}", retry, maxRetry);
-				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to get CatchablePokemon; sleep {} ms. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to get CatchablePokemon; sleep {} ms. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
@@ -302,8 +328,16 @@ public class Utils {
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to get PlayerData; sleep 5 sec. and then retry {}/{}", retry, maxRetry);
-				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to get PlayerData; sleep {} ms. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to get PlayerData; sleep {} ms. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
@@ -347,8 +381,16 @@ public class Utils {
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to get Inventories; sleep 5 sec. and then retry {}/{}", retry, maxRetry);
-				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to get Inventories; sleep {} ms. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to get Inventories; sleep {} ms. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
@@ -392,8 +434,16 @@ public class Utils {
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to get PokeBank; sleep 5 sec. and then retry {}/{}", retry, maxRetry);
-				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to get PokeBank; sleep {} ms. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to get PokeBank; sleep {} ms. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
@@ -436,8 +486,16 @@ public class Utils {
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to loot {}; sleep 5 sec. and then retry {}/{}", Utils.getName(stop), retry, maxRetry);
-				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to loot {}; sleep {} ms. and then retry {}/{}", getName(stop), secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to loot {}; sleep {} ms. and then retry {}/{}", getName(stop), secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
@@ -480,8 +538,16 @@ public class Utils {
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to encounter {}; sleep 5 sec. and then retry {}/{}", Utils.getPokemonFullName(mon), retry, maxRetry);
-				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to encounter {}; sleep {} ms. and then retry {}/{}", getPokemonFullName(mon), secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to encounter {}; sleep {} ms. and then retry {}/{}", getPokemonFullName(mon), secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
@@ -524,8 +590,16 @@ public class Utils {
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to transfer {}; sleep 5 sec. and then retry {}/{}", Utils.getPokemonFullName(mon), retry, maxRetry);
-				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to transfer {}; sleep {} ms. and then retry {}/{}", getPokemonFullName(mon), secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to transfer {}; sleep {} ms. and then retry {}/{}", getPokemonFullName(mon), secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
@@ -565,14 +639,22 @@ public class Utils {
 			} catch (LoginFailedException | RemoteServerException e) {
 
 				if (retry>=maxRetry) {
-					String m = "Failed to encounter "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
+					String m = "Failed to catch "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
 					logger.error("[Utils] "+m, e);
 					throw new RuntimeException(m,e);
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to encounter {}; sleep 5 sec. and then retry {}/{}", Utils.getPokemonFullName(mon), retry, maxRetry);
-				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to catch {}; sleep {} sec. and then retry {}/{}", Utils.getPokemonFullName(mon), secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to catch {}; sleep {} sec. and then retry {}/{}", Utils.getPokemonFullName(mon), secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
@@ -612,14 +694,22 @@ public class Utils {
 			} catch (LoginFailedException | RemoteServerException e) {
 
 				if (retry>=maxRetry) {
-					String m = "Failed to encounter "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
+					String m = "Failed to catch "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
 					logger.error("[Utils] "+m, e);
 					throw new RuntimeException(m,e);
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to encounter {}; sleep 5 sec. and then retry {}/{}", Utils.getPokemonFullName(mon), retry, maxRetry);
-				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to catch {}; sleep {} sec. and then retry {}/{}", Utils.getPokemonFullName(mon), secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to catch {}; sleep {} sec. and then retry {}/{}", Utils.getPokemonFullName(mon), secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
@@ -668,6 +758,16 @@ public class Utils {
 				retry ++;
 				logger.warn("[Utils] Failed to remove {}; sleep 5 sec. and then retry {}/{}", id,retry, maxRetry);
 				Utils.sleep(5000);
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to remove {}; sleep {} sec. and then retry {}/{}", id, secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to remove {}; sleep {} sec. and then retry {}/{}", id, secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
 
 			}
 		}
