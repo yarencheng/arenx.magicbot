@@ -396,6 +396,10 @@ public class Bot {
 	public void transferPokemon(){
 		PokeBank pb = Utils.getPokeBank(go.get());
 
+		if (pb.getPokemons().size() < 300){
+			return;
+		}
+
 		pb.getPokemons()
 			.stream()
 			.filter(mon->mon.getCp()<1500)
@@ -405,6 +409,7 @@ public class Bot {
 				logger.debug("[Pokemon] try to transfer {}", Utils.getPokemonFullName(mon));
 
 				ReleasePokemonResponse.Result r = Utils.transferPokemon(mon);
+				Utils.sleep(RandomUtils.nextLong(500, 1500));
 
 				switch(r){
 				case ERROR_POKEMON_IS_EGG:
