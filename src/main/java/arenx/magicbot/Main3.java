@@ -83,9 +83,6 @@ public class Main3 {
 			return;
 		}
 
-		int minutesToPlay = config.getInt("globaleSettings.minutesToPlay");
-		int numberOfBot = config.getInt("globaleSettings.numberOfBot");
-
 		List<Account>accounts=new ArrayList<>();
 		config.configurationsAt("accounts.account")
 			.forEach(a->{
@@ -95,87 +92,44 @@ public class Main3 {
 				accounts.add(account);
 			});
 
+		int numberOfBot = accounts.size();
 		Thread[] threads = new Thread[numberOfBot];
 		Bot[] bots = new Bot[numberOfBot];
 		long[] botStartTime = new long[numberOfBot];
 
 		for(int i=0;i<accounts.size();){
 
-			int slotIndex=-1;
-			for(int j=0;j<numberOfBot;j++){
-				if (bots[j] != null && bots[j].isShutdown()) {
-					slotIndex = j;
-					break;
-				}
-
-				if (System.currentTimeMillis() - botStartTime[j] > minutesToPlay * 60 * 1000) {
-					slotIndex = j;
-					break;
-				}
-			}
-
-			if (slotIndex==-1){
-				Utils.sleep(10000);
-				continue;
-			}
-
-			if (bots[slotIndex]!=null) {
-
-				logger.info("[Main] stop and wait bot:{}", bots[slotIndex]);
-
-				bots[slotIndex].stop();
-
-				threads[slotIndex].join();
-			}
-
 			PokemonGo go = login(accounts.get(i));
 
 			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main3.class);
-			bots[slotIndex] = context.getBean(Bot.class);
-			bots[slotIndex].setPokemonGo(go);
+			bots[i] = context.getBean(Bot.class);
+			bots[i].setPokemonGo(go);
 
-			botStartTime[slotIndex] = System.currentTimeMillis();
+			botStartTime[i] = System.currentTimeMillis();
 
-			final int slotIndex_ = slotIndex;
-			threads[slotIndex] = new Thread(){
+			final int i_ = i;
+			threads[i] = new Thread(){
 				@Override
 				public void run(){
-					bots[slotIndex_].start();
+					bots[i_].start();
 				}
 			};
 
-			threads[slotIndex].setUncaughtExceptionHandler((thread, e)->{
-				logger.error("Some thing goes wrong", e);
-				System.exit(-1);
+			threads[i].setUncaughtExceptionHandler((thread, e)->{
+				logger.error("[Main] Some thing goes wrong inside bot thread", e);
 			});
-			threads[slotIndex].setName(accounts.get(i).getUsername());
+			threads[i].setName(accounts.get(i).getUsername());
 
-			logger.info("[Main] start bot:{}", bots[slotIndex]);
-			threads[slotIndex].start();
+			logger.info("[Main] start bot:{}", bots[i]);
+			threads[i].start();
 
 			i++;
 		}
 
-		for(int j=0;j<numberOfBot;){
-			if (!bots[j].isShutdown() && System.currentTimeMillis() - botStartTime[j] < minutesToPlay * 60 * 1000) {
-				j = 0;
-				Utils.sleep(1000);
-				continue;
-			}
-			j++;
-		}
-
-		logger.info("[Main] stop bots");
+		logger.info("[Main] wait bots to stop");
 
 		for(int j=0;j<numberOfBot;j++){
-			if(threads[j].isAlive()){
-				logger.info("[Main] stop bot:{}", bots[j]);
-				bots[j].stop();
-			}
-		}
-
-		for(int j=0;j<numberOfBot;j++){
-			logger.info("[Main] wait bot:{}", bots[j]);
+			logger.info("[Main] wait bot:{} to stop", bots[j]);
 			threads[j].join();
 		}
 	}

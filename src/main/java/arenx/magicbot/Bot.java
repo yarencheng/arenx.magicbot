@@ -11,10 +11,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +45,10 @@ public class Bot {
 
 	private static Logger logger = LoggerFactory.getLogger(Bot.class);
 
-	private boolean isStoped = false;
+	private HierarchicalConfiguration<ImmutableNode> config;
 	private boolean isShutdown = false;
 	private long roundCount = 0;
+	private long startTime;
 
 	@Autowired
 	private MoveStrategy moveStrategy;
@@ -59,8 +62,9 @@ public class Bot {
 	@Autowired
 	private AtomicReference<PokemonGo> go;
 
-	public void stop(){
-		isStoped = true;
+	@Autowired
+	public void setConfig(@Autowired HierarchicalConfiguration<ImmutableNode> config) {
+		this.config = config.configurationAt("bot");
 	}
 
 	public boolean isShutdown(){
@@ -72,6 +76,8 @@ public class Bot {
 	}
 
 	public void start(){
+
+		startTime = System.currentTimeMillis();
 
 		restoreState();
 
@@ -87,7 +93,7 @@ public class Bot {
 			}
 		});
 
-		while(!isStoped){
+		while(true){
 			roundCount++;
 			logger.debug("[Bot] ============= new round #{} =============", roundCount);
 
@@ -106,7 +112,10 @@ public class Bot {
 
 			Utils.sleep(RandomUtils.nextLong(1000, 2000));
 
-//			break;
+			if (System.currentTimeMillis() - startTime > config.getLong("minutesToPlay") * 60 * 1000) {
+				break;
+			}
+
 		}
 
 		logger.info("[Bot] prepare to stop");

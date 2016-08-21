@@ -2,6 +2,7 @@ package arenx.magicbot;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class SimpleInformationStrategy implements InformationStrategy{
 
 		showExp();
 
-
+		DurationFormatUtils s;
 
 	}
 
@@ -57,11 +58,12 @@ public class SimpleInformationStrategy implements InformationStrategy{
 
 
 
-		logger.info("[Status] {} lv:{}({}%) exp:{}/{} exp/h:{}",
+		logger.info("[Status] {} lv:{}({}%) exp:{}/{} exp/h:{} time:{}",
 				data.getUsername(),
 				stats.getLevel(), exp_percent,
 				stats.getExperience(),stats.getNextLevelXp(),
-				exp_hourly);
+				exp_hourly,
+				DurationFormatUtils.formatDurationHMS(System.currentTimeMillis()-startTime));
 
 		lastTimeshowExp = System.currentTimeMillis();
 
