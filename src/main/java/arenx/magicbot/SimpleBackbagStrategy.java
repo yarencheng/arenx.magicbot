@@ -62,6 +62,7 @@ public class SimpleBackbagStrategy implements BackbagStrategy {
 				.filter(item -> item.getItemId() != ItemId.ITEM_INCUBATOR_BASIC)
 				.filter(item -> item.getItemId() != ItemId.ITEM_SPECIAL_CAMERA)
 				.filter(item -> item.getItemId() != ItemId.ITEM_INCENSE_ORDINARY)
+				.filter(item -> item.getItemId() != ItemId.ITEM_TROY_DISK)
 				.forEach(item -> {
 					logger.warn("[SimpleBackbagStrategy] {} {} is not handled", item.getCount(), item.getItemId());
 				});
