@@ -809,8 +809,6 @@ public class Utils {
 				}
 
 				retry ++;
-				logger.warn("[Utils] Failed to remove {}; sleep 5 sec. and then retry {}/{}", id,retry, maxRetry);
-				Utils.sleep(5000);
 
 				if (e instanceof LoginFailedException) {
 					logger.warn("[Utils] Failed to remove {}; sleep {} sec. and then retry {}/{}", id, secondToSleepWhileLoginFailedException, retry, maxRetry);
