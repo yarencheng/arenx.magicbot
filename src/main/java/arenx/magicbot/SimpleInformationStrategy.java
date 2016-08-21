@@ -53,8 +53,6 @@ public class SimpleInformationStrategy implements InformationStrategy{
 			startExp=stats.getExperience();
 		} else {
 			exp_hourly = (int)((stats.getExperience() - startExp) / ((double)(System.currentTimeMillis()-startTime) / (60 * 60 * 1000) ));
-			logger.error("aaa {}", (stats.getExperience() - startExp));
-			logger.error("aaa {}", ((double)(System.currentTimeMillis()-startTime) / (60 * 60 * 1000) ));
 		}
 
 
