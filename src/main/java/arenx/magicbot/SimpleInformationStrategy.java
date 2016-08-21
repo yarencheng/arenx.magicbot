@@ -31,6 +31,7 @@ public class SimpleInformationStrategy implements InformationStrategy{
 
 	private long startTime;
 	private long startExp;
+	private double startKm;
 
 
 	@Override
@@ -62,18 +63,20 @@ public class SimpleInformationStrategy implements InformationStrategy{
 		if (startTime==0) {
 			startTime=System.currentTimeMillis();
 			startExp=stats.getExperience();
+			startKm=stats.getKmWalked();
 		} else {
 			exp_hourly = (int)((stats.getExperience() - startExp) / ((double)(System.currentTimeMillis()-startTime) / (60 * 60 * 1000) ));
 		}
 
+		double km = stats.getKmWalked() - startKm;
 
-
-		logger.info("[Status] {} lv:{}({}%) exp:{}/{} exp/h:{} pokestop:{} pokemon:{} time:{}",
+		logger.info("[Status] {} lv:{}({}%) exp:{}/{} exp/h:{} pokestop:{} pokemon:{} km:{} time:{}",
 				data.getUsername(),
 				stats.getLevel(), exp_percent,
 				stats.getExperience(),stats.getNextLevelXp(),
 				exp_hourly,
 				lootedPokestopCount.get(),catchedPokemonCount.get(),
+				String.format("%.1f", km),
 				DurationFormatUtils.formatDuration(System.currentTimeMillis()-startTime, "HH'h':mm'm'"));
 
 		lastTimeshowExp = System.currentTimeMillis();
