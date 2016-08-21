@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.pokegoapi.api.PokemonGo;
+import com.pokegoapi.api.inventory.EggIncubator;
 import com.pokegoapi.api.inventory.Inventories;
 import com.pokegoapi.api.inventory.ItemBag;
 import com.pokegoapi.api.inventory.PokeBank;
@@ -29,6 +30,8 @@ import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
 import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
 import com.pokegoapi.api.player.PlayerLevelUpRewards;
+import com.pokegoapi.api.pokemon.EggPokemon;
+import com.pokegoapi.api.pokemon.HatchedEgg;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.AsyncPokemonGoException;
 import com.pokegoapi.exceptions.LoginFailedException;
@@ -41,6 +44,7 @@ import POGOProtos.Data.PlayerDataOuterClass.PlayerData;
 import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 import POGOProtos.Networking.Responses.RecycleInventoryItemResponseOuterClass.RecycleInventoryItemResponse;
 import POGOProtos.Networking.Responses.ReleasePokemonResponseOuterClass.ReleasePokemonResponse;
+import POGOProtos.Networking.Responses.UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse;
 import arenx.magicbot.bean.Location;
 
 public class Utils {
@@ -969,6 +973,171 @@ public class Utils {
 
 				if (e instanceof RemoteServerException) {
 					logger.warn("[Utils] Failed to get PlayerLevelUpRewards; sleep {} sec. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
+
+			}
+		}
+	}
+
+	public static List<HatchedEgg> queryHatchedEggs(PokemonGo go){
+		Validate.notNull(go);
+
+		int maxRetry=5;
+		int retry=0;
+
+		Inventories in = getInventories(go);
+
+		while(true){
+			try {
+
+				try {
+					return in.getHatchery().queryHatchedEggs();
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to get HatchedEgg after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to get HatchedEgg; sleep {} sec. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to get HatchedEgg; sleep {} sec. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
+
+			}
+		}
+	}
+
+	public static UseItemEggIncubatorResponse.Result incubate(EggPokemon egg, EggIncubator inc){
+		Validate.notNull(egg);
+		Validate.notNull(inc);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					return egg.incubate(inc);
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to incubate EggPokemon after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to incubate EggPokemon; sleep {} sec. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to incubate EggPokemon; sleep {} sec. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
+
+			}
+		}
+	}
+
+	public static boolean isInUsed(EggIncubator in){
+		Validate.notNull(in);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					return in.isInUse();
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to query EggIncubator after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to query EggIncubator; sleep {} sec. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to query EggIncubator; sleep {} sec. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
 					Utils.sleep(secondToSleepWhileRemoteServerException);
 				}
 

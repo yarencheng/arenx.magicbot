@@ -3,6 +3,7 @@ package arenx.magicbot;
 import java.io.File;
 import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -28,12 +29,15 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
 import com.pokegoapi.api.PokemonGo;
+import com.pokegoapi.api.inventory.EggIncubator;
+import com.pokegoapi.api.inventory.Hatchery;
 import com.pokegoapi.api.inventory.PokeBank;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
 import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
 import com.pokegoapi.api.player.PlayerLevelUpRewards;
+import com.pokegoapi.api.pokemon.EggPokemon;
 
 import POGOProtos.Data.PlayerDataOuterClass.PlayerData;
 import POGOProtos.Inventory.Item.ItemAwardOuterClass.ItemAward;
@@ -41,6 +45,7 @@ import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 import POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus;
 import POGOProtos.Networking.Responses.RecycleInventoryItemResponseOuterClass.RecycleInventoryItemResponse;
 import POGOProtos.Networking.Responses.ReleasePokemonResponseOuterClass.ReleasePokemonResponse;
+import POGOProtos.Networking.Responses.UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse;
 import arenx.magicbot.bean.Location;
 
 @Component
@@ -127,6 +132,8 @@ public class Bot {
 			Map<ItemId, Integer> items = backbagStrategy.getTobeRemovedItem();
 			removeItems(items);
 
+			checkEgg();
+
 			Location l = moveStrategy.nextLocation();
 			go.get().setLocation(l.getLatitude(), l.getLongitude(), l.getAltitude());
 
@@ -154,6 +161,66 @@ public class Bot {
 		storeState();
 
 		isShutdown= true;
+	}
+
+	private void checkEgg(){
+		Utils.queryHatchedEggs(go.get()).forEach(egg->{
+			logger.info("[Egg] {} is hatched", egg.getId());
+		});
+
+		Hatchery ha = Utils.getInventories(go.get()).getHatchery();
+
+		List<EggIncubator> ins = Utils.getInventories(go.get()).getIncubators().stream()
+			.filter(in->!Utils.isInUsed(in))
+			.collect(Collectors.toList());
+
+		if (ins.isEmpty()) {
+			logger.debug("[Egg] no any incubator is available");
+		} else {
+			logger.debug("[Egg] {} incubator is available", ins.size());
+		}
+
+		List<EggPokemon> eggs = ha.getEggs().stream()
+			.filter(egg->!egg.isIncubate())
+			.sorted((a,b)->-Double.compare(a.getEggKmWalkedTarget(), b.getEggKmWalkedTarget()))
+			.limit(ins.size())
+			.collect(Collectors.toList());
+
+		for(int i=0;i<ins.size();i++){
+			logger.debug("[Egg] try to hatch egg({}) in incubator({})", eggs.get(i).getId(), ins.get(i).getId());
+
+			UseItemEggIncubatorResponse.Result r = Utils.incubate(eggs.get(i), ins.get(i));
+
+			switch(r){
+			case ERROR_INCUBATOR_ALREADY_IN_USE:
+				logger.warn("[Egg] incubator is allready in used");
+				break;
+			case ERROR_INCUBATOR_NOT_FOUND:
+				logger.warn("[Egg] no such incubator");
+				break;
+			case ERROR_INCUBATOR_NO_USES_REMAINING:
+				logger.warn("[Egg] the incubator has no remaining");
+				break;
+			case ERROR_POKEMON_ALREADY_INCUBATING:
+				logger.warn("[Egg] the egg is allready incubated");
+				break;
+			case ERROR_POKEMON_EGG_NOT_FOUND:
+				logger.warn("[Egg] no such egg");
+				break;
+			case ERROR_POKEMON_ID_NOT_EGG:
+				logger.warn("[Egg] not a egg");
+				break;
+			case SUCCESS:
+				logger.info("[Egg] Start to hatch egg {}km", eggs.get(i).getEggKmWalkedTarget());
+				break;
+			case UNRECOGNIZED:
+			case UNSET:
+			default:
+				logger.warn("[Egg] Gots erro while trying to put egg into incubator");
+				break;
+
+			}
+		}
 	}
 
 	private void checkLevelup(){
