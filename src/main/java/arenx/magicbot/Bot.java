@@ -186,7 +186,7 @@ public class Bot {
 			.limit(ins.size())
 			.collect(Collectors.toList());
 
-		for(int i=0;i<ins.size();i++){
+		for(int i=0;i<eggs.size();i++){
 			logger.debug("[Egg] try to hatch egg({}) in incubator({})", eggs.get(i).getId(), ins.get(i).getId());
 
 			UseItemEggIncubatorResponse.Result r = Utils.incubate(eggs.get(i), ins.get(i));
