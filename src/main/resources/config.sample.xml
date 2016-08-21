@@ -12,7 +12,9 @@
 	</accounts>
 	
 	<bot>
-		<minutesToPlay>5</minutesToPlay>
+		<minutesToPlay>480</minutesToPlay>
+		<maxPokestopToLoot>9999999</maxPokestopToLoot>
+		<maxPokemonToCatch>9999999</maxPokemonToCatch>
 	</bot>
 	
 	<shortestLurePathMoveStrategy>

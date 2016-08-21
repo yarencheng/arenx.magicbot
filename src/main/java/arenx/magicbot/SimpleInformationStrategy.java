@@ -1,11 +1,13 @@
 package arenx.magicbot;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.inventory.Stats;
@@ -18,6 +20,14 @@ public class SimpleInformationStrategy implements InformationStrategy{
 
 	@Autowired
 	private AtomicReference<PokemonGo> go;
+
+	@Autowired
+	@Qualifier("lootedPokestopCount")
+	private AtomicLong lootedPokestopCount;
+
+	@Autowired
+	@Qualifier("catchedPokemonCount")
+	private AtomicLong catchedPokemonCount;
 
 	private long startTime;
 	private long startExp;
@@ -58,12 +68,13 @@ public class SimpleInformationStrategy implements InformationStrategy{
 
 
 
-		logger.info("[Status] {} lv:{}({}%) exp:{}/{} exp/h:{} time:{}",
+		logger.info("[Status] {} lv:{}({}%) exp:{}/{} exp/h:{} pokestop:{} pokemon:{} time:{}",
 				data.getUsername(),
 				stats.getLevel(), exp_percent,
 				stats.getExperience(),stats.getNextLevelXp(),
 				exp_hourly,
-				DurationFormatUtils.formatDurationHMS(System.currentTimeMillis()-startTime));
+				lootedPokestopCount.get(),catchedPokemonCount.get(),
+				DurationFormatUtils.formatDuration(System.currentTimeMillis()-startTime, "HH'h':mm'm'"));
 
 		lastTimeshowExp = System.currentTimeMillis();
 

@@ -2,6 +2,7 @@ package arenx.magicbot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
@@ -11,6 +12,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -71,6 +73,18 @@ public class Main3 {
 	@Bean
 	public InformationStrategy getInformationStrategy(){
 		return new SimpleInformationStrategy();
+	}
+
+	@Bean
+	@Qualifier("lootedPokestopCount")
+	public AtomicLong getLootedPokestopCount(){
+		return new AtomicLong(0);
+	}
+
+	@Bean
+	@Qualifier("catchedPokemonCount")
+	public AtomicLong getCatchedPokemonCount(){
+		return new AtomicLong(0);
 	}
 
 	public static void startBots() throws Exception {

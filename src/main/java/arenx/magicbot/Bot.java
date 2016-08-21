@@ -6,6 +6,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
@@ -61,6 +63,14 @@ public class Bot {
 
 	@Autowired
 	private AtomicReference<PokemonGo> go;
+
+	@Autowired
+	@Qualifier("lootedPokestopCount")
+	private AtomicLong lootedPokestopCount;
+
+	@Autowired
+	@Qualifier("catchedPokemonCount")
+	private AtomicLong catchedPokemonCount;
 
 	@Autowired
 	public void setConfig(@Autowired HierarchicalConfiguration<ImmutableNode> config) {
@@ -113,6 +123,17 @@ public class Bot {
 			Utils.sleep(RandomUtils.nextLong(1000, 2000));
 
 			if (System.currentTimeMillis() - startTime > config.getLong("minutesToPlay") * 60 * 1000) {
+				logger.info("[Pokemon] Reach max. time({}) of playing time reached. Stop bot.");
+				break;
+			}
+
+			if (catchedPokemonCount.get() >= config.getLong("maxPokemonToCatch")) {
+				logger.info("[Pokemon] Reach max. number({}) of catched pokemons. Stop bot.", catchedPokemonCount.get());
+				break;
+			}
+
+			if (lootedPokestopCount.get() >= config.getLong("maxPokestopToLoot")) {
+				logger.info("[Pokemon] Reach max. number({}) of looted pokestops. Stop bot.", lootedPokestopCount.get());
 				break;
 			}
 
@@ -266,6 +287,8 @@ public class Bot {
 
 				if (pr.wasSuccessful()) {
 
+					lootedPokestopCount.incrementAndGet();
+
 					if (success_loot_stop.containsKey(stop.getId())) {
 						if (System.currentTimeMillis() - success_loot_stop.get(stop.getId()) < 60 * 1000){
 							logger.error("[Pokestop] loot successfully again at {} in 1 min. It could be a soft ban");
@@ -396,6 +419,7 @@ public class Bot {
 					return;
 				case CATCH_SUCCESS:
 					logger.info("[Pokemon] catch {}", Utils.getPokemonFullName(e.getKey()));
+					catchedPokemonCount.incrementAndGet();
 					return;
 				case UNRECOGNIZED:
 				default:
