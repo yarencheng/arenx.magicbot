@@ -549,7 +549,9 @@ public class Bot {
 	public void transferPokemon(){
 		PokeBank pb = Utils.getPokeBank(go.get());
 
-		if (pb.getPokemons().size() < 300){
+		logger.debug("[Pokemon] {} pokemons in the pokebank", pb.getPokemons().size());
+
+		if (pb.getPokemons().size() < 220){
 			return;
 		}
 
