@@ -437,7 +437,7 @@ public class Bot {
 					break;
 				case NO_RESULT_SET:
 					logger.error("[Pokestop] loot result is not set after lotting {}; skip it in future.", Utils.getName(stop));
-					error_loot_stop.put(stop.getId(), System.currentTimeMillis());
+//					error_loot_stop.put(stop.getId(), System.currentTimeMillis());
 					break;
 				case OUT_OF_RANGE:
 					logger.warn("[Pokestop] {} is out of range", Utils.getName(stop));
@@ -447,7 +447,7 @@ public class Bot {
 				case UNRECOGNIZED:
 				default:
 					logger.error("[Pokestop] unknow status is set after looting {}; skip it in future.", Utils.getName(stop));
-					error_loot_stop.put(stop.getId(), System.currentTimeMillis());
+//					error_loot_stop.put(stop.getId(), System.currentTimeMillis());
 					break;
 				}
 
