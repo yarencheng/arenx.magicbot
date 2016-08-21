@@ -54,6 +54,9 @@ public class Bot {
 	private BackbagStrategy backbagStrategy;
 
 	@Autowired
+	private InformationStrategy informationStrategy;
+
+	@Autowired
 	private AtomicReference<PokemonGo> go;
 
 	public void stop(){
@@ -88,8 +91,9 @@ public class Bot {
 			roundCount++;
 			logger.debug("[Bot] ============= new round #{} =============", roundCount);
 
-			transferPokemon();
+			informationStrategy.showStatus();
 
+			transferPokemon();
 			encounterPokemons();
 
 			Map<ItemId, Integer> items = backbagStrategy.getTobeRemovedItem();

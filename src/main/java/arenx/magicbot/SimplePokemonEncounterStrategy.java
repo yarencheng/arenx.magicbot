@@ -43,7 +43,7 @@ public class SimplePokemonEncounterStrategy implements OldStrategy{
 			return;
 		}
 
-		((SimpleInformationStrategy)informationStrategy).showCatchablePokemon();
+		((OldSimpleInformationStrategy)informationStrategy).showCatchablePokemon();
 
 		mons.forEach(mon->{
 

@@ -68,6 +68,11 @@ public class Main3 {
 		return new SimpleBackbagStrategy();
 	}
 
+	@Bean
+	public InformationStrategy getInformationStrategy(){
+		return new SimpleInformationStrategy();
+	}
+
 	public static void startBots() throws Exception {
 
 		XMLConfiguration config = null;

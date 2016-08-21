@@ -19,6 +19,7 @@ import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.inventory.Inventories;
 import com.pokegoapi.api.inventory.ItemBag;
 import com.pokegoapi.api.inventory.PokeBank;
+import com.pokegoapi.api.inventory.Stats;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.FortDetails;
 import com.pokegoapi.api.map.fort.Pokestop;
@@ -336,6 +337,58 @@ public class Utils {
 
 				if (e instanceof RemoteServerException) {
 					logger.warn("[Utils] Failed to get PlayerData; sleep {} ms. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
+
+			}
+		}
+
+	}
+
+	public static Stats getStats(PokemonGo go){
+		Validate.notNull(go);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					return go.getPlayerProfile().getStats();
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to get Stats after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to get Stats; sleep {} ms. and then retry {}/{}", secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to get Stats; sleep {} ms. and then retry {}/{}", secondToSleepWhileRemoteServerException, retry, maxRetry);
 					Utils.sleep(secondToSleepWhileRemoteServerException);
 				}
 

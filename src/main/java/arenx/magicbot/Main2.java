@@ -90,7 +90,7 @@ public class Main2 {
 		walkingStrategy = new ShortestPathWalkingStrategy(go);
 		lootStrategy = new SimpleLootPokestopStrategy(go);
 		cleanBackbagStrategy = new SimpleCleanBackbagStrategy(go);
-		infoStrategy = new SimpleInformationStrategy(go);
+		infoStrategy = new OldSimpleInformationStrategy(go);
 		pokemonEncounterStrategy = new SimplePokemonEncounterStrategy(go);
 		transferStrategy = new SimplePokemonTransferStrategy(go);
 		levelUpStrategy = new SimpleLevelUpStrategy(go);
@@ -98,7 +98,7 @@ public class Main2 {
 		((SimpleLootPokestopStrategy)lootStrategy).setCleanBackbagStrategy(cleanBackbagStrategy);
 		((SimplePokemonEncounterStrategy)pokemonEncounterStrategy).setInformationStrategy(infoStrategy);
 
-		((SimpleInformationStrategy)infoStrategy).showAll();
+		((OldSimpleInformationStrategy)infoStrategy).showAll();
 
 		while(true){
 			levelUpStrategy.execute();
