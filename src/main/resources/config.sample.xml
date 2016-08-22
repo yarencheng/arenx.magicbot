@@ -33,4 +33,97 @@
 		<maxBerryToKeep>120</maxBerryToKeep>
 	</simpleBackbagStrategy>
 	
+	<simplePokemonBankStrategy>
+	
+		<!--
+				lv		max CP
+				40		100%
+				30		85%
+				25		71%
+				20		57%
+		-->
+		<minAbsoluteCPpercentPercentToEnvole>60.0</minAbsoluteCPpercentPercentToEnvole>
+		<minAbsoluteCPpercentPercentTokeep>60.0</minAbsoluteCPpercentPercentTokeep>
+		<keepIfMoveTypeSame>true</keepIfMoveTypeSame>
+		
+		<pokemons>
+			<pokemon number="20">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="22">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="24">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="36">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="53">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="83">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="85">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="99">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="101">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="106">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="108">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="110">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="115">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="117">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="119">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="123">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="127">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="128">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="130">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="137">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="141">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="142">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="143">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="150">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+			<pokemon number="151">
+				<keepIfMoveTypeSame>false</keepIfMoveTypeSame>
+			</pokemon>
+		</pokemons>
+		
+	</simplePokemonBankStrategy>
+	
 </configuration>
