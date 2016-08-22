@@ -109,28 +109,44 @@ public class Main3 {
 		int numberOfBot = accounts.size();
 		Thread[] threads = new Thread[numberOfBot];
 		Bot[] bots = new Bot[numberOfBot];
-		long[] botStartTime = new long[numberOfBot];
 
 		for(int i=0;i<accounts.size();){
-
-			PokemonGo go = login(accounts.get(i));
-
-			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main3.class);
-			bots[i] = context.getBean(Bot.class);
-			bots[i].setPokemonGo(go);
-
-			botStartTime[i] = System.currentTimeMillis();
 
 			final int i_ = i;
 			threads[i] = new Thread(){
 				@Override
 				public void run(){
-					bots[i_].start();
+					AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main3.class);
+					bots[i_] = context.getBean(Bot.class);
+
+					int maxRestart=5;
+					int restart=0;
+					while (true) {
+
+						try{
+							PokemonGo go = login(accounts.get(i_));
+							bots[i_].setPokemonGo(go);
+							bots[i_].start();
+						}catch (Throwable e){
+							logger.error("[Main] Some thing goes wrong inside current bot", e);
+							Utils.sleep(1000);
+
+							if (restart<=maxRestart){
+								logger.error("[Main] restart bot {}/{}", restart, maxRestart);
+								restart++;
+							} else {
+								throw new RuntimeException("[Main] this bot got "+restart+" times of error", e);
+							}
+						}
+
+						bots[i_].storeState();
+					}
 				}
 			};
 
 			threads[i].setUncaughtExceptionHandler((thread, e)->{
 				logger.error("[Main] Some thing goes wrong inside bot thread", e);
+				System.exit(-1);
 			});
 			threads[i].setName(accounts.get(i).getUsername());
 
@@ -138,6 +154,17 @@ public class Main3 {
 			threads[i].start();
 
 			i++;
+		}
+
+
+		for(int j=0;j<numberOfBot;j++){
+			final int j_ = j;
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				@Override
+				public void run() {
+					bots[j_].storeState();
+				}
+			});
 		}
 
 		logger.info("[Main] wait bots to stop");

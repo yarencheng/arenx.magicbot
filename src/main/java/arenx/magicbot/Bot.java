@@ -107,13 +107,6 @@ public class Bot {
 
 		currentLevel = Utils.getStats(go.get()).getLevel();
 
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				storeState();
-			}
-		});
-
 		while(true){
 			roundCount++;
 			logger.debug("[Bot] ============= new round #{} =============", roundCount);
