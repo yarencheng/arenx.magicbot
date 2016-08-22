@@ -2,7 +2,6 @@ package arenx.magicbot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -110,7 +109,7 @@ public class Main3 {
 		int numberOfBot = accounts.size();
 		Thread[] threads = new Thread[numberOfBot];
 		Bot[] bots = new Bot[numberOfBot];
-		AtomicBoolean[] isBotError = new AtomicBoolean[numberOfBot];
+		long[] botStartTime = new long[numberOfBot];
 
 		for(int i=0;i<accounts.size();){
 
@@ -120,7 +119,7 @@ public class Main3 {
 			bots[i] = context.getBean(Bot.class);
 			bots[i].setPokemonGo(go);
 
-			isBotError[i] = new AtomicBoolean(false);
+			botStartTime[i] = System.currentTimeMillis();
 
 			final int i_ = i;
 			threads[i] = new Thread(){
@@ -132,58 +131,13 @@ public class Main3 {
 
 			threads[i].setUncaughtExceptionHandler((thread, e)->{
 				logger.error("[Main] Some thing goes wrong inside bot thread", e);
-				isBotError[i_].set(true);
 			});
 			threads[i].setName(accounts.get(i).getUsername());
 
-			logger.info("[Main] start bot:{}", accounts.get(i).getUsername());
+			logger.info("[Main] start bot:{}", bots[i]);
 			threads[i].start();
 
 			i++;
-		}
-
-		boolean isAllStopNormally;
-		while(true){
-
-			isAllStopNormally = true;
-
-			for(int i=0;i<numberOfBot;i++){
-				if (!threads[i].isAlive() && isBotError[i].get()){
-					logger.info("[Main] bot:{} stop with error; restart it", accounts.get(i).getUsername());
-					isAllStopNormally = false;
-
-					PokemonGo go = login(accounts.get(i));
-
-					AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main3.class);
-					bots[i] = context.getBean(Bot.class);
-					bots[i].setPokemonGo(go);
-
-					isBotError[i].set(false);
-
-					final int i_ = i;
-					threads[i] = new Thread(){
-						@Override
-						public void run(){
-							bots[i_].start();
-						}
-					};
-
-					threads[i].setUncaughtExceptionHandler((thread, e)->{
-						logger.error("[Main] Some thing goes wrong inside bot thread", e);
-						isBotError[i_].set(true);
-					});
-					threads[i].setName(accounts.get(i).getUsername());
-
-					logger.info("[Main] restart bot:{}", accounts.get(i).getUsername());
-					threads[i].start();
-				}
-			}
-
-			if (isAllStopNormally){
-				break;
-			} else {
-				Utils.sleep(1000);
-			}
 		}
 
 		logger.info("[Main] wait bots to stop");
