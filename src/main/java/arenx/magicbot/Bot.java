@@ -107,6 +107,13 @@ public class Bot {
 
 		currentLevel = Utils.getStats(go.get()).getLevel();
 
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				storeState();
+			}
+		});
+
 		while(true){
 			roundCount++;
 			logger.debug("[Bot] ============= new round #{} =============", roundCount);
@@ -257,7 +264,7 @@ public class Bot {
 
 	}
 
-	private void removeItems(Map<ItemId, Integer> items){
+	public void removeItems(Map<ItemId, Integer> items){
 		items.forEach((id,quantity)->{
 
 			logger.debug("[Bot] try to recycle {} {}", quantity, id);
@@ -548,7 +555,7 @@ public class Bot {
 			;
 	}
 
-	private void transferPokemon(){
+	public void transferPokemon(){
 		PokeBank pb = Utils.getPokeBank(go.get());
 
 		logger.debug("[Pokemon] {} pokemons in the pokebank", pb.getPokemons().size());
