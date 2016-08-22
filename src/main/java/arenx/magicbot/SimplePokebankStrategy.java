@@ -84,6 +84,9 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 			.getPokemons()
 			.stream()
 			.filter(mon->{
+				return Utils.getCandy(mon) >= mon.getCandiesToEvolve();
+			})
+			.filter(mon->{
 				return mon.getPokemonId() != PokemonMetaRegistry.getHightestForFamily(mon.getMeta().getFamily());
 			})
 			.filter(mon->{

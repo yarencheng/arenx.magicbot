@@ -752,6 +752,61 @@ public class Utils {
 
 	}
 
+	public static int getCandy(Pokemon mon){
+		Validate.notNull(mon);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					return mon.getCandy();
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to get candy of "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to get candy of {}; sleep {} ms. and then retry {}/{}", getPokemonFullName(mon), secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to get candy of {}; sleep {} ms. and then retry {}/{}", getPokemonFullName(mon), secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
+
+			}
+		}
+
+	}
+
 	public static CatchResult catchPokemonEasy(CatchablePokemon  mon){
 		Validate.notNull(mon);
 
