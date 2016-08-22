@@ -153,9 +153,6 @@ public class Main3 {
 					isAllStopNormally = false;
 
 					PokemonGo go = login(accounts.get(i));
-
-					AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main3.class);
-					bots[i] = context.getBean(Bot.class);
 					bots[i].setPokemonGo(go);
 
 					isBotError[i].set(false);
@@ -164,6 +161,7 @@ public class Main3 {
 					threads[i] = new Thread(){
 						@Override
 						public void run(){
+							bots[i_].restoreState();
 							bots[i_].start();
 						}
 					};
