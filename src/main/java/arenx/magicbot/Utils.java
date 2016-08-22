@@ -28,6 +28,7 @@ import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
+import com.pokegoapi.api.map.pokemon.EvolutionResult;
 import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
 import com.pokegoapi.api.player.PlayerLevelUpRewards;
 import com.pokegoapi.api.pokemon.EggPokemon;
@@ -688,6 +689,61 @@ public class Utils {
 
 				if (e instanceof RemoteServerException) {
 					logger.warn("[Utils] Failed to transfer {}; sleep {} ms. and then retry {}/{}", getPokemonFullName(mon), secondToSleepWhileRemoteServerException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileRemoteServerException);
+				}
+
+			}
+		}
+
+	}
+
+	public static EvolutionResult envolvePokemon(Pokemon mon){
+		Validate.notNull(mon);
+
+		int maxRetry=5;
+		int retry=0;
+
+		while(true){
+			try {
+
+				try {
+					return mon.evolve();
+				} catch (AsyncPokemonGoException e) {
+					if (!(e.getCause() instanceof RuntimeException)){
+						throw e;
+					}
+					if (!(e.getCause().getCause() instanceof ExecutionException)){
+						throw e;
+					}
+					if (e.getCause().getCause().getCause() instanceof LoginFailedException){
+						throw (LoginFailedException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof RemoteServerException){
+						throw (RemoteServerException)e.getCause().getCause().getCause();
+					}
+					if (e.getCause().getCause().getCause() instanceof InvalidProtocolBufferException){
+						throw (InvalidProtocolBufferException)e.getCause().getCause().getCause();
+					}
+					throw e;
+				}
+
+			} catch (LoginFailedException | RemoteServerException | InvalidProtocolBufferException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to envolve "+ Utils.getPokemonFullName(mon)+" after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Utils] "+m, e);
+					throw new RuntimeException(m,e);
+				}
+
+				retry ++;
+
+				if (e instanceof LoginFailedException) {
+					logger.warn("[Utils] Failed to envolve {}; sleep {} ms. and then retry {}/{}", getPokemonFullName(mon), secondToSleepWhileLoginFailedException, retry, maxRetry);
+					Utils.sleep(secondToSleepWhileLoginFailedException);
+				}
+
+				if (e instanceof RemoteServerException) {
+					logger.warn("[Utils] Failed to envolve {}; sleep {} ms. and then retry {}/{}", getPokemonFullName(mon), secondToSleepWhileRemoteServerException, retry, maxRetry);
 					Utils.sleep(secondToSleepWhileRemoteServerException);
 				}
 

@@ -35,6 +35,7 @@ import com.pokegoapi.api.inventory.PokeBank;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
+import com.pokegoapi.api.map.pokemon.EvolutionResult;
 import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
 import com.pokegoapi.api.player.PlayerLevelUpRewards;
 import com.pokegoapi.api.pokemon.EggPokemon;
@@ -69,6 +70,9 @@ public class Bot {
 
 	@Autowired
 	private InformationStrategy informationStrategy;
+
+	@Autowired
+	private PokebankStrategy pokebankStrategy;
 
 	@Autowired
 	private AtomicReference<PokemonGo> go;
@@ -114,6 +118,7 @@ public class Bot {
 			informationStrategy.showStatus();
 			checkLevelup();
 
+			envolvePokemon();
 			transferPokemon();
 
 			if (catchedPokemonCount.get() < config.getLong("maxPokemonToCatch")) {
@@ -548,6 +553,42 @@ public class Bot {
 			;
 	}
 
+	public void envolvePokemon(){
+		pokebankStrategy.getToBeEnvolvePokemons()
+			.forEach(mon->{
+
+				logger.debug("[Pokemon] try to envlove {}", Utils.getPokemonFullName(mon));
+
+				EvolutionResult r = Utils.envolvePokemon(mon);
+				Utils.sleep(RandomUtils.nextLong(500, 1500));
+
+				switch(r.getResult()){
+				case FAILED_INSUFFICIENT_RESOURCES:
+					logger.warn("[Pokemon] {} is out", Utils.getPokemonFullName(mon));
+					break;
+				case FAILED_POKEMON_CANNOT_EVOLVE:
+					logger.warn("[Pokemon] {} can envolve", Utils.getPokemonFullName(mon));
+					break;
+				case FAILED_POKEMON_IS_DEPLOYED:
+					logger.warn("[Pokemon] {} is deployed", Utils.getPokemonFullName(mon));
+					break;
+				case FAILED_POKEMON_MISSING:
+					logger.warn("[Pokemon] {} is missing", Utils.getPokemonFullName(mon));
+					break;
+				case SUCCESS:
+					logger.info("[Pokemon] {} is envolved successfully", Utils.getPokemonFullName(mon));
+					break;
+				case UNRECOGNIZED:
+				case UNSET:
+				default:
+					logger.error("[Pokemon] failed to envolve {} r="+r, Utils.getPokemonFullName(mon));
+					break;
+
+				}
+
+			});
+	}
+
 	public void transferPokemon(){
 		PokeBank pb = Utils.getPokeBank(go.get());
 
@@ -557,10 +598,7 @@ public class Bot {
 			return;
 		}
 
-		pb.getPokemons()
-			.stream()
-			.filter(mon->mon.getCp()<1500)
-			.filter(mon->mon.getLevel()<22)
+		pokebankStrategy.getToBeTransferedPokemons()
 			.forEach(mon->{
 
 				logger.debug("[Pokemon] try to transfer {}", Utils.getPokemonFullName(mon));

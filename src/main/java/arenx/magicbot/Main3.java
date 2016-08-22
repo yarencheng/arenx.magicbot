@@ -76,6 +76,11 @@ public class Main3 {
 	}
 
 	@Bean
+	public PokebankStrategy getPokebankStrategy(){
+		return new SimplePokebankStrategy();
+	}
+
+	@Bean
 	@Qualifier("lootedPokestopCount")
 	public AtomicLong getLootedPokestopCount(){
 		return new AtomicLong(0);
