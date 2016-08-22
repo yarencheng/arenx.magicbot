@@ -80,30 +80,37 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 
 	@Override
 	public List<Pokemon> getToBeEnvolvePokemons() {
+		return getToBeEnvolvePokemons(true);
+	}
+
+	private List<Pokemon> getToBeEnvolvePokemons(boolean filterCandy) {
 		return Utils.getPokeBank(go.get())
-			.getPokemons()
-			.stream()
-			.filter(mon->{
-				return Utils.getCandy(mon) >= mon.getCandiesToEvolve();
-			})
-			.filter(mon->{
-				return mon.getPokemonId() != PokemonMetaRegistry.getHightestForFamily(mon.getMeta().getFamily());
-			})
-			.filter(mon->{
-				int max;
-				try {
-					max = mon.getAbsoluteMaxCp();
-				} catch (Exception e) {
-					logger.error("[SimplePokebankStrategy] no such pokemon "+Utils.getPokemonFullName(mon), e);
-					return false;
-				}
-				return ((double)mon.getCp() * 100 / max) >= rules.get(mon.getMeta().getNumber()).minAbsoluteCPpercentPercentToEnvole;
-			})
-			.peek(mon->{
-				logger.debug("[SimplePokebankStrategy] envolve {} CP:{}",
-						Utils.getPokemonFullName(mon), mon.getCp());
-			})
-			.collect(Collectors.toList());
+				.getPokemons()
+				.stream()
+				.filter(mon->{
+					if (filterCandy) {
+						return Utils.getCandy(mon) >= mon.getCandiesToEvolve();
+					}
+					return true;
+				})
+				.filter(mon->{
+					return mon.getPokemonId() != PokemonMetaRegistry.getHightestForFamily(mon.getMeta().getFamily());
+				})
+				.filter(mon->{
+					int max;
+					try {
+						max = mon.getAbsoluteMaxCp();
+					} catch (Exception e) {
+						logger.error("[SimplePokebankStrategy] no such pokemon "+Utils.getPokemonFullName(mon), e);
+						return false;
+					}
+					return ((double)mon.getCp() * 100 / max) >= rules.get(mon.getMeta().getNumber()).minAbsoluteCPpercentPercentToEnvole;
+				})
+				.peek(mon->{
+					logger.debug("[SimplePokebankStrategy] envolve {} CP:{}",
+							Utils.getPokemonFullName(mon), mon.getCp());
+				})
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -145,11 +152,16 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 			})
 			.collect(Collectors.toList());
 
+		List<Pokemon> envolve = getToBeEnvolvePokemons(false);
+
 		List<Pokemon> transfer = Utils.getPokeBank(go.get())
 			.getPokemons()
 			.stream()
 			.filter(mon->{
 				return !notTransfer.contains(mon);
+			})
+			.filter(mon->{
+				return !envolve.contains(mon);
 			})
 			.peek(mon->{
 				logger.debug("[SimplePokebankStrategy] transfer {} CP:{} move1:{}({}) move2:{}({})",

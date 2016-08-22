@@ -31,7 +31,6 @@ import org.springframework.stereotype.Component;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.inventory.EggIncubator;
 import com.pokegoapi.api.inventory.Hatchery;
-import com.pokegoapi.api.inventory.PokeBank;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
@@ -590,14 +589,6 @@ public class Bot {
 	}
 
 	public void transferPokemon(){
-		PokeBank pb = Utils.getPokeBank(go.get());
-
-		logger.debug("[Pokemon] {} pokemons in the pokebank", pb.getPokemons().size());
-
-		if (pb.getPokemons().size() < 220){
-			return;
-		}
-
 		pokebankStrategy.getToBeTransferedPokemons()
 			.forEach(mon->{
 
