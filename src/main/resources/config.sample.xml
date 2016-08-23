@@ -4,9 +4,10 @@
 		<!-- TODO -->
 	</network>
 	
-	<minutesToPlay>10</minutesToPlay>
-	<minutesToRest>50</minutesToRest>
-	<numberOfThread>2</numberOfThread>
+	<minutesToPlay>5</minutesToPlay>
+	<minutesToRest>55</minutesToRest>
+	<numberOfThread>1</numberOfThread>
+	<loop>true</loop>
 
 	<accounts>
 		<account>

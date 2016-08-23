@@ -34,6 +34,7 @@ public class Main3 {
 		int minutesToPlay = config.getInt("minutesToPlay");
 		int minutesToRest = config.getInt("minutesToRest");
 		int numberOfThread = config.getInt("numberOfThread");
+		boolean isLoop = config.getBoolean("loop");
 
 		List<Account>accounts=getAccounts(config);
 		List<Bot> bots = accounts
@@ -53,7 +54,11 @@ public class Main3 {
 		ScheduledThreadPoolExecutor ste = new ScheduledThreadPoolExecutor(numberOfThread);
 
 		bots.forEach(bot->{
-			ste.scheduleAtFixedRate(bot, 0, minutesToPlay + minutesToRest, TimeUnit.MINUTES);
+			if (isLoop) {
+				ste.scheduleWithFixedDelay(bot, 0, minutesToRest, TimeUnit.MINUTES);
+			} else {
+				ste.execute(bot);
+			}
 		});
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
