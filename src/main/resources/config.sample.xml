@@ -3,6 +3,10 @@
 	<network>
 		<!-- TODO -->
 	</network>
+	
+	<minutesToPlay>10</minutesToPlay>
+	<minutesToRest>50</minutesToRest>
+	<numberOfThread>2</numberOfThread>
 
 	<accounts>
 		<account>
@@ -12,9 +16,6 @@
 	</accounts>
 	
 	<bot>
-		<minutesToPlay>480</minutesToPlay>
-		<maxPokestopToLoot>9999999</maxPokestopToLoot>
-		<maxPokemonToCatch>9999999</maxPokemonToCatch>
 	</bot>
 	
 	<shortestLurePathMoveStrategy>
@@ -42,7 +43,7 @@
 				25		71%
 				20		57%
 		-->
-		<minAbsoluteCPpercentPercentToEnvole>60.0</minAbsoluteCPpercentPercentToEnvole>
+		<minAbsoluteCPpercentPercentToEnvole>100.0</minAbsoluteCPpercentPercentToEnvole>
 		<minAbsoluteCPpercentPercentTokeep>60.0</minAbsoluteCPpercentPercentTokeep>
 		<keepIfMoveTypeSame>true</keepIfMoveTypeSame>
 		

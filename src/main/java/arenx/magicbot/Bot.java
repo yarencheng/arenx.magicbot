@@ -20,6 +20,7 @@ import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,11 @@ import com.pokegoapi.api.map.pokemon.EvolutionResult;
 import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
 import com.pokegoapi.api.player.PlayerLevelUpRewards;
 import com.pokegoapi.api.pokemon.EggPokemon;
+import com.pokegoapi.auth.CredentialProvider;
+import com.pokegoapi.auth.PtcCredentialProvider;
+import com.pokegoapi.exceptions.AsyncPokemonGoException;
+import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.RemoteServerException;
 
 import POGOProtos.Data.PlayerDataOuterClass.PlayerData;
 import POGOProtos.Inventory.Item.ItemAwardOuterClass.ItemAward;
@@ -46,19 +52,22 @@ import POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokem
 import POGOProtos.Networking.Responses.RecycleInventoryItemResponseOuterClass.RecycleInventoryItemResponse;
 import POGOProtos.Networking.Responses.ReleasePokemonResponseOuterClass.ReleasePokemonResponse;
 import POGOProtos.Networking.Responses.UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse;
+import arenx.magicbot.bean.Account;
 import arenx.magicbot.bean.Location;
+import okhttp3.OkHttpClient;
 
 @Component
-public class Bot {
+public class Bot implements Runnable{
 
 	private static Logger logger = LoggerFactory.getLogger(Bot.class);
 	public static final Object state_data_lock = new Object();
 
 	private HierarchicalConfiguration<ImmutableNode> config;
-	private boolean isShutdown = false;
 	private long roundCount = 0;
 	private long startTime;
+	private int minutesToPlay;
 	private int currentLevel;
+	private Account account;
 
 
 	@Autowired
@@ -89,17 +98,39 @@ public class Bot {
 		this.config = config.configurationAt("bot");
 	}
 
-	public boolean isShutdown(){
-		return isShutdown;
+	public void setMinutesToPlay(int minutesToPlay){
+		this.minutesToPlay=minutesToPlay;
 	}
 
-	public void setPokemonGo(PokemonGo go){
-		this.go.set(go);
+	public void setAccount(Account account){
+		Validate.notNull(account);
+
+		this.account=new Account();
+
+		this.account.setUsername(account.getUsername());
+		this.account.setPassword(account.getPassword());
 	}
 
-	public void start(){
+	@Override
+	public void run(){
+
+		try {
+			startBot();
+		} catch (Throwable e) {
+			logger.error("[Bot] error occurse", e);
+			throw e;
+		}
+	}
+
+	private void startBot(){
+
+		Thread.currentThread().setName(account.getUsername());
+
+		logger.info("[Bot] start");
 
 		startTime = System.currentTimeMillis();
+
+		go.set(login());
 
 		restoreState();
 
@@ -119,12 +150,7 @@ public class Bot {
 
 			envolvePokemon();
 			transferPokemon();
-
-			if (catchedPokemonCount.get() < config.getLong("maxPokemonToCatch")) {
-				encounterPokemons();
-			} else {
-				logger.debug("[Pokemon] Reach max. number({}) of catched pokemons. skip catching pokemon.", catchedPokemonCount.get());
-			}
+			encounterPokemons();
 
 			Map<ItemId, Integer> items = backbagStrategy.getTobeRemovedItem();
 			removeItems(items);
@@ -134,21 +160,12 @@ public class Bot {
 			Location l = moveStrategy.nextLocation();
 			go.get().setLocation(l.getLatitude(), l.getLongitude(), l.getAltitude());
 
-			if (lootedPokestopCount.get() < config.getLong("maxPokestopToLoot")) {
-				lootPokestop();
-			} else {
-				logger.debug("[Pokemon] Reach max. number({}) of looted pokestops. Stop looting pokestop.", lootedPokestopCount.get());
-			}
+			lootPokestop();
 
 			Utils.sleep(RandomUtils.nextLong(1000, 2000));
 
-			if (System.currentTimeMillis() - startTime > config.getLong("minutesToPlay") * 60 * 1000) {
-				logger.info("[Pokemon] Reach max. time({}) of playe. Stop bot.", catchedPokemonCount.get());
-				break;
-			}
-
-			if (catchedPokemonCount.get() >= config.getLong("maxPokemonToCatch") &&
-					lootedPokestopCount.get() >= config.getLong("maxPokestopToLoot")) {
+			if (isTimeout()) {
+				logger.info("[Bot] timeout; stop bot");
 				break;
 			}
 		}
@@ -156,8 +173,10 @@ public class Bot {
 		logger.info("[Bot] prepare to stop");
 
 		storeState();
+	}
 
-		isShutdown= true;
+	private boolean isTimeout(){
+		return System.currentTimeMillis() - startTime > minutesToPlay * 60 * 1000;
 	}
 
 	private void checkEgg(){
@@ -261,7 +280,7 @@ public class Bot {
 
 	}
 
-	public void removeItems(Map<ItemId, Integer> items){
+	private void removeItems(Map<ItemId, Integer> items){
 		items.forEach((id,quantity)->{
 
 			logger.debug("[Bot] try to recycle {} {}", quantity, id);
@@ -321,21 +340,11 @@ public class Bot {
 			config.setProperty(pd.getUsername()+".latitude", l.getLatitude());
 			config.setProperty(pd.getUsername()+".longitude", l.getLongitude());
 			config.setProperty(pd.getUsername()+".altitude", l.getAltitude());
-
-			long secondUsed = (System.currentTimeMillis() - startTime) / 1000;
-			config.setProperty(pd.getUsername()+".secondUsed", secondUsed);
-
-			try {
-				configBuilder.save();
-			} catch (ConfigurationException e) {
-				logger.error("Failed to save "+file, e);
-				System.exit(-1);
-			}
 		}
 
 	}
 
-	public void restoreState(){
+	private void restoreState(){
 		logger.info("[Bot] restore data");
 
 		Properties properties = null;
@@ -366,13 +375,6 @@ public class Bot {
 			Location l = new Location(Double.parseDouble(latitude),Double.parseDouble(longitude),Double.parseDouble(altitude));
 			logger.info("[Bot] restore location to {} for player {}", l, pd.getUsername());
 			moveStrategy.setCurrentLocation(l);
-		}
-
-		if (properties.containsKey(pd.getUsername()+".secondUsed")) {
-			long secondUsed = Long.parseLong(properties.getProperty(pd.getUsername()+".secondUsed"));
-			long t = startTime;
-			startTime -= secondUsed*1000;
-			logger.info("[Bot] secondUsed:{} startTime:{}->{}", secondUsed, t, startTime);
 		}
 	}
 
@@ -552,7 +554,7 @@ public class Bot {
 			;
 	}
 
-	public void envolvePokemon(){
+	private void envolvePokemon(){
 		pokebankStrategy.getToBeEnvolvePokemons()
 			.forEach(mon->{
 
@@ -588,7 +590,7 @@ public class Bot {
 			});
 	}
 
-	public void transferPokemon(){
+	private void transferPokemon(){
 		pokebankStrategy.getToBeTransferedPokemons()
 			.forEach(mon->{
 
@@ -619,6 +621,41 @@ public class Bot {
 				}
 
 			});
+	}
+
+	private PokemonGo login(){
+		OkHttpClient httpClient = new OkHttpClient();
+		CredentialProvider cp;
+		PokemonGo go;
+
+		int maxRetry = 5;
+		int retry = 0;
+
+		logger.info("[Login] start login:{}", account.getUsername());
+
+		while(true){
+			try {
+				logger.debug("[Login] username:{} password:{}", account.getUsername(), account.getPassword());
+				cp = new PtcCredentialProvider(httpClient, account.getUsername(), account.getPassword());
+				go = new PokemonGo(cp, httpClient);
+				break;
+			} catch (AsyncPokemonGoException | LoginFailedException | RemoteServerException e) {
+
+				if (retry>=maxRetry) {
+					String m = "Failed to login after retry " + retry + "/" + maxRetry+" times";
+					logger.error("[Login] {}", m);
+					throw new RuntimeException(m, e);
+				}
+
+				retry ++;
+				logger.warn("[Login] Failed to login; sleep 5 sec. and then retry {}/{}", retry, maxRetry);
+				Utils.sleep(5000);
+			}
+		}
+
+		logger.info("[Login] success");
+
+		return go;
 	}
 
 }
