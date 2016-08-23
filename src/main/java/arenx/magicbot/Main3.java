@@ -68,7 +68,9 @@ public class Main3 {
 			}
 		});
 
-
+		if (isLoop) {
+			ste.shutdown();
+		}
 	}
 
 	public static HierarchicalConfiguration<ImmutableNode> getconfig(){
