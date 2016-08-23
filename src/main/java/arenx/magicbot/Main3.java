@@ -68,7 +68,7 @@ public class Main3 {
 			}
 		});
 
-		if (isLoop) {
+		if (!isLoop) {
 			ste.shutdown();
 		}
 	}
