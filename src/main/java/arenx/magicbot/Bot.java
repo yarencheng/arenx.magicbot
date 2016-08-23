@@ -334,6 +334,10 @@ public class Bot implements Runnable{
 				System.exit(-1);
 			}
 
+			if (go.get()==null) {
+				return;
+			}
+
 			PlayerData pd = Utils.getPlayerData(go.get());
 
 			Location l = moveStrategy.getCurrentLocation();
