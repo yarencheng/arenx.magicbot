@@ -87,6 +87,7 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 		return Utils.getPokeBank(go.get())
 				.getPokemons()
 				.stream()
+				.filter(mon->!mon.isFavorite())
 				.filter(mon->{
 					if (filterCandy) {
 						return Utils.getCandy(mon) >= mon.getCandiesToEvolve();
@@ -118,6 +119,7 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 		List<Pokemon> notTransfer = Utils.getPokeBank(go.get())
 			.getPokemons()
 			.stream()
+			.filter(mon->!mon.isFavorite())
 			.filter(mon->{
 				int max;
 				try {
