@@ -334,16 +334,23 @@ public class Bot implements Runnable{
 				System.exit(-1);
 			}
 
-			if (go.get()==null) {
-				return;
+			if (go.get()!=null) {
+				PlayerData pd = Utils.getPlayerData(go.get());
+
+				Location l = moveStrategy.getCurrentLocation();
+				config.setProperty(pd.getUsername()+".latitude", l.getLatitude());
+				config.setProperty(pd.getUsername()+".longitude", l.getLongitude());
+				config.setProperty(pd.getUsername()+".altitude", l.getAltitude());
 			}
 
-			PlayerData pd = Utils.getPlayerData(go.get());
 
-			Location l = moveStrategy.getCurrentLocation();
-			config.setProperty(pd.getUsername()+".latitude", l.getLatitude());
-			config.setProperty(pd.getUsername()+".longitude", l.getLongitude());
-			config.setProperty(pd.getUsername()+".altitude", l.getAltitude());
+
+			try {
+				configBuilder.save();
+			} catch (ConfigurationException e) {
+				logger.error("Failed to save "+file, e);
+				System.exit(-1);
+			}
 		}
 
 	}
