@@ -52,6 +52,7 @@ import POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokem
 import POGOProtos.Networking.Responses.RecycleInventoryItemResponseOuterClass.RecycleInventoryItemResponse;
 import POGOProtos.Networking.Responses.ReleasePokemonResponseOuterClass.ReleasePokemonResponse;
 import POGOProtos.Networking.Responses.UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse;
+import arenx.magicbot.PokebankStrategy.CatchFlavor;
 import arenx.magicbot.bean.Account;
 import arenx.magicbot.bean.Location;
 import okhttp3.OkHttpClient;
@@ -523,18 +524,36 @@ public class Bot implements Runnable{
 				}
 			})
 			.map(e->{
-				logger.debug("[Pokemon] try to catch #{}{}({})", e.getKey().getPokemonId().getNumber(), Utils.getTranslatedPokemonName(e.getKey()), Utils.getPokemonName(e.getKey()));
+				CatchFlavor cf = pokebankStrategy.getCatchFlavor(e.getValue().getPokemonData());
 
-				CatchResult r = Utils.catchPokemonEasy(e.getKey());
+				logger.debug("[Pokemon] try to catch #{}{}({}) with flavor {}",
+						e.getKey().getPokemonId().getNumber(),
+						Utils.getTranslatedPokemonName(e.getKey()), Utils.getPokemonName(e.getKey()),
+						cf);
+
+				CatchResult r;
 				Utils.sleep(1000);
 
 				int escapeRetryMax = 10;
 				int escapeRetry = 0;
-				while(r.getStatus()==CatchStatus.CATCH_ESCAPE && escapeRetry<escapeRetryMax){
+				do {
 					escapeRetry++;
-					r = Utils.catchPokemonEasy(e.getKey());
+
+					switch (cf) {
+					case HOPE_TO_CATCH:
+						r = Utils.catchPokemonHard(e.getKey());
+						break;
+					case NO_DESIRE:
+						r = Utils.catchPokemonEasy(e.getKey());
+						break;
+					default:
+						r = Utils.catchPokemonHard(e.getKey());
+						logger.error("[Pokemon] no action defined for {}", cf);
+						break;
+					}
+
 					Utils.sleep(1000);
-				}
+				}while(r.getStatus()==CatchStatus.CATCH_ESCAPE && escapeRetry<escapeRetryMax);
 
 				return new SimpleEntry<CatchablePokemon, CatchResult>(e.getKey() , r);
 			})

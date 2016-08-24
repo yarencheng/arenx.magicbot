@@ -16,8 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.pokemon.Pokemon;
+import com.pokegoapi.api.pokemon.PokemonDetails;
 import com.pokegoapi.api.pokemon.PokemonMetaRegistry;
 import com.pokegoapi.api.pokemon.PokemonMoveMetaRegistry;
+
+import POGOProtos.Data.PokemonDataOuterClass.PokemonData;
 
 public class SimplePokebankStrategy implements PokebankStrategy{
 
@@ -174,6 +177,21 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 			.collect(Collectors.toList());
 
 		return transfer;
+	}
+
+	@Override
+	public CatchFlavor getCatchFlavor(PokemonData mon) {
+		int max;
+
+		try {
+			max = PokemonDetails.getAbsoluteMaxCp(mon.getPokemonId());
+		} catch (Exception e) {
+			logger.error("[SimplePokebankStrategy] no such pokemon "+Utils.getPokemonFullName(mon.getPokemonId().getNumber()), e);
+			return CatchFlavor.HOPE_TO_CATCH;
+		}
+
+		return ((double)mon.getCp() * 100 / max) > rules.get(mon.getPokemonId().getNumber()).minAbsoluteCPpercentPercentTokeep
+				? CatchFlavor.HOPE_TO_CATCH : CatchFlavor.NO_DESIRE;
 	}
 
 }
