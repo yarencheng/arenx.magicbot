@@ -41,7 +41,7 @@ public class BotConfig {
 
 	@Bean
 	public MoveStrategy getMoveStrategy(){
-		return new ShortestLurePathMoveStrategy();
+		return new ShortestPathMoveStrategy();
 	}
 
 	@Bean

@@ -12,12 +12,12 @@ import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 
-public class ShortestPathWalkingStrategy implements OldStrategy{
+public class OldShortestPathWalkingStrategy implements OldStrategy{
 
-	private static Logger logger = LoggerFactory.getLogger(ShortestPathWalkingStrategy.class);
+	private static Logger logger = LoggerFactory.getLogger(OldShortestPathWalkingStrategy.class);
 	private PokemonGo go;
 
-	public ShortestPathWalkingStrategy(PokemonGo go){
+	public OldShortestPathWalkingStrategy(PokemonGo go){
 		this.go=go;
 
 		double longitude = Config.instance.getDefaultLongitude();

@@ -87,7 +87,7 @@ public class Main2 {
 		logger.info("login ...");
 		go = login();
 
-		walkingStrategy = new ShortestPathWalkingStrategy(go);
+		walkingStrategy = new OldShortestPathWalkingStrategy(go);
 		lootStrategy = new SimpleLootPokestopStrategy(go);
 		cleanBackbagStrategy = new SimpleCleanBackbagStrategy(go);
 		infoStrategy = new OldSimpleInformationStrategy(go);

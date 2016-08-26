@@ -4,29 +4,32 @@
 		<!-- TODO -->
 	</network>
 	
-	<minutesToPlay>5</minutesToPlay>
-	<minutesToRest>55</minutesToRest>
+	<minutesToPlay>30</minutesToPlay>
+	<minutesToRest>90</minutesToRest>
 	<numberOfThread>1</numberOfThread>
 	<loop>true</loop>
 
 	<accounts>
 		<account>
-			<username></username>
-			<password></password>
+			<username>arenptcdev1</username>
+			<password>920157aa</password>
 		</account>
 	</accounts>
 	
 	<bot>
 	</bot>
 	
-	<shortestLurePathMoveStrategy>
+	<shortestPathMoveStrategy>
 		<defaultLoaction>
-			<latitude>25.042087</latitude>
-			<longitude>121.544228</longitude>
+			<latitude>25.041941</latitude>
+			<longitude>121.544075</longitude>
 			<altitude>5</altitude>
 		</defaultLoaction>
 		<speedMeterPerSecond>2</speedMeterPerSecond>
-	</shortestLurePathMoveStrategy>
+		<searchPokemonNotInPokeindex>true</searchPokemonNotInPokeindex>
+		<!-- NONE, VERY_COMMON, COMMON, UNCOMMON, RARE, VERY_RARE, EPIC, LEGENDARY, MYTHIC -->
+		<searchPokemonClass>VERY_RARE</searchPokemonClass>
+	</shortestPathMoveStrategy>
 
 	<simpleBackbagStrategy>
 		<maxBallToKeep>120</maxBallToKeep>
