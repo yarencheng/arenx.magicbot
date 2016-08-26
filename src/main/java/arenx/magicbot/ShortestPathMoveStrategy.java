@@ -85,7 +85,7 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 
 				new TreeSet<>(radar.keySet())
 					.forEach(id->{
-						if (System.currentTimeMillis() - radar.get(id).getCreated()*1000 >10*60*1000) {
+						if (radar.get(id).remainingSecond()<2) {
 							radar.remove(id);
 						}
 					});
