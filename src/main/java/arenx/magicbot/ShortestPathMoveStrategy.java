@@ -43,6 +43,7 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 	private PokeRadar.Pokemon curTargetPokemon;
 	private RestTemplate rest = new RestTemplate();
 	private SortedMap<String,PokeRadar.Pokemon>radar = Collections.synchronizedSortedMap(new TreeMap<>());
+	private SortedMap<String,PokeRadar.Pokemon>radar_visited = Collections.synchronizedSortedMap(new TreeMap<>());
 
 	@Autowired
 	public void setConfig(@Autowired HierarchicalConfiguration<ImmutableNode> config){
@@ -89,6 +90,12 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 							radar.remove(id);
 						}
 					});
+				new TreeSet<>(radar_visited.keySet())
+				.forEach(id->{
+					if (radar_visited.get(id).remainingSecond()<2) {
+						radar_visited.remove(id);
+					}
+				});
 
 				double minLatitude = lastLocation.get().getLatitude()-0.03;
 				double maxLatitude = lastLocation.get().getLatitude()+0.03;
@@ -149,6 +156,7 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 				return distance/remain_second < speedMeterPerSecond;
 			})
 			.filter(mon->Utils.distance(mon.getLatitude(), mon.getLongitude(), l.getLatitude(), l.getLongitude())>10)
+			.filter(mon->!radar_visited.containsKey(mon.getId()))
 			.sorted((a,b)->Double.compare(
 					Utils.distance(a.getLatitude(), a.getLongitude(), l.getLatitude(), l.getLongitude()),
 					Utils.distance(b.getLatitude(), b.getLongitude(), l.getLatitude(), l.getLongitude())
@@ -170,6 +178,10 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 				logger.info("[MoveStrategy] heading to {} with distance {}m {}sec", Utils.getPokemonFullName(curTargetPokemon.getPokemonId()),
 						Utils.distance(curTargetPokemon.getLatitude(), curTargetPokemon.getLongitude(), l.getLatitude(), l.getLongitude()),
 						curTargetPokemon.remainingSecond());
+			}
+
+			if (Utils.distance(mon_near.get().getLatitude(), mon_near.get().getLongitude(), l.getLatitude(), l.getLongitude())<5) {
+				radar_visited.put(mon_near.get().getId(), mon_near.get());
 			}
 
 		} else if (pokestop.isPresent()) {
