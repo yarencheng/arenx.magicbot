@@ -155,7 +155,6 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 
 				return distance/remain_second < speedMeterPerSecond;
 			})
-			.filter(mon->Utils.distance(mon.getLatitude(), mon.getLongitude(), l.getLatitude(), l.getLongitude())>10)
 			.filter(mon->!radar_visited.containsKey(mon.getId()))
 			.sorted((a,b)->Double.compare(
 					Utils.distance(a.getLatitude(), a.getLongitude(), l.getLatitude(), l.getLongitude()),
