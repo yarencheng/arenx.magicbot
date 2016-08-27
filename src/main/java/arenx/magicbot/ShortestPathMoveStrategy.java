@@ -76,12 +76,19 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 			final String deviceId = "0bc6acc0656911e689aa3bc8887363b5";
 
 			int pokemonId = 0;
+			long lastTimeUpdate = 0;
 
 			while(true){
 				if (lastLocation.get()==null) {
 					Utils.sleep(1000);
 					continue;
 				}
+
+				if (lastTimeUpdate > lastTimeMoved ) {
+					Utils.sleep(1000);
+					continue;
+				}
+
 				logger.debug("[PokeRadar] update ...");
 
 				new TreeSet<>(radar.keySet())
@@ -123,6 +130,8 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 				}
 
 				logger.debug("[PokeRadar] update ... done {}", radar.size());
+
+				lastTimeUpdate = System.currentTimeMillis();
 
 				Utils.sleep(10000);
 
