@@ -108,7 +108,15 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 							deviceId,minLatitude,maxLatitude,minLongitude,maxLongitude,pokemonId)
 					.getData()
 					.stream()
-					.filter(mon->mon.getTrainerName().equals("(Poke Radar Prediction)"))
+					.filter(mon->{
+						if (mon.getTrainerName().equals("(Poke Radar Prediction)")){
+							return true;
+						}
+						if (mon.getUpvotes()>3 && mon.getUpvotes()>mon.getDownvotes()){
+							return true;
+						}
+						return false;
+						})
 					.forEach(mon->radar.put(mon.getId(), mon));
 				}catch(Throwable e){
 					logger.error("[PokeRadar] Failed to get radar data", e);
