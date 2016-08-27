@@ -173,10 +173,17 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 				return distance/remain_second < speedMeterPerSecond;
 			})
 			.filter(mon->!radar_visited.containsKey(mon.getId()))
-			.sorted((a,b)->Double.compare(
+			.sorted((a,b)->{
+				int monClass = Integer.compare(
+						PokemonMetaRegistry.getMeta(PokemonId.forNumber(b.getPokemonId())).getPokemonClass().ordinal(),
+						PokemonMetaRegistry.getMeta(PokemonId.forNumber(a.getPokemonId())).getPokemonClass().ordinal());
+
+				int distance = Double.compare(
 					Utils.distance(a.getLatitude(), a.getLongitude(), l.getLatitude(), l.getLongitude()),
-					Utils.distance(b.getLatitude(), b.getLongitude(), l.getLatitude(), l.getLongitude())
-					))
+					Utils.distance(b.getLatitude(), b.getLongitude(), l.getLatitude(), l.getLongitude()));
+
+				return monClass!=0 ? monClass : distance;
+				})
 			.findFirst();
 
 		Location target_location;
