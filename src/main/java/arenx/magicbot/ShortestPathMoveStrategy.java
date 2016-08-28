@@ -3,6 +3,7 @@ package arenx.magicbot;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,6 +45,8 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 	private RestTemplate rest = new RestTemplate();
 	private SortedMap<String,PokeRadar.Pokemon>radar = Collections.synchronizedSortedMap(new TreeMap<>());
 	private SortedMap<String,PokeRadar.Pokemon>radar_visited = Collections.synchronizedSortedMap(new TreeMap<>());
+	private SortedSet<Integer>ignorePokemons = new TreeSet<>();
+	private SortedSet<Integer>searchForPokemons = new TreeSet<>();
 
 	@Autowired
 	public void setConfig(@Autowired HierarchicalConfiguration<ImmutableNode> config){
@@ -65,6 +68,18 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 		defaultLoaction.setAltitude(this.config.getDouble("defaultLoaction.altitude"));
 
 		logger.info("[MoveStrategy] set lastLocation to {}", lastLocation);
+
+		if (this.config.containsKey("ignorePokemons.ignorePokemon")) {
+			this.config.configurationsAt("ignorePokemons").forEach(c->{
+				ignorePokemons.add(c.getInt("ignorePokemon"));
+			});
+		}
+
+		if (this.config.containsKey("searchForPokemons.searchForPokemon")) {
+			this.config.configurationsAt("searchForPokemons").forEach(c->{
+				searchForPokemons.add(c.getInt("searchForPokemon"));
+			});
+		}
 	}
 
 	@Autowired
@@ -162,10 +177,17 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 			.filter(mon->{
 				boolean isCaptured = pokedex.getPokedexEntry(PokemonId.forNumber(mon.getPokemonId())) == null ? false:
 					pokedex.getPokedexEntry(PokemonId.forNumber(mon.getPokemonId())).getTimesCaptured() > 0;
+
 				boolean isClass = searchPokemonClass.ordinal() <= PokemonMetaRegistry.getMeta(PokemonId.forNumber(mon.getPokemonId())).getPokemonClass().ordinal();
 
-				return isClass ? true : !isCaptured;
+				boolean searchFor = searchForPokemons.contains(mon.getPokemonId());
+
+				return
+					isClass ? true :
+					!isCaptured ? true :
+					searchFor;
 				})
+			.filter(mon->!ignorePokemons.contains(mon.getPokemonId()))
 			.filter(mon->{
 				double distance = Utils.distance(mon.getLatitude(), mon.getLongitude(), l.getLatitude(), l.getLongitude());
 				long remain_second = mon.remainingSecond();

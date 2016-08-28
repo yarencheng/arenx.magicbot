@@ -29,6 +29,11 @@
 		<searchPokemonNotInPokeindex>true</searchPokemonNotInPokeindex>
 		<!-- NONE, VERY_COMMON, COMMON, UNCOMMON, RARE, VERY_RARE, EPIC, LEGENDARY, MYTHIC -->
 		<searchPokemonClass>VERY_RARE</searchPokemonClass>
+		<ignorePokemons>
+			<ignorePokemon>127</ignorePokemon>
+		</ignorePokemons>
+		<searchForPokemons>
+		</searchForPokemons>
 	</shortestPathMoveStrategy>
 
 	<simpleBackbagStrategy>
