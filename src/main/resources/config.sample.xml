@@ -28,9 +28,10 @@
 		<speedMeterPerSecond>2</speedMeterPerSecond>
 		<searchPokemonNotInPokeindex>true</searchPokemonNotInPokeindex>
 		<!-- NONE, VERY_COMMON, COMMON, UNCOMMON, RARE, VERY_RARE, EPIC, LEGENDARY, MYTHIC -->
-		<searchPokemonClass>VERY_RARE</searchPokemonClass>
+		<searchPokemonClass>UNCOMMON</searchPokemonClass>
 		<ignorePokemons>
 			<ignorePokemon>127</ignorePokemon>
+			<ignorePokemon>114</ignorePokemon>
 		</ignorePokemons>
 		<searchForPokemons>
 		</searchForPokemons>

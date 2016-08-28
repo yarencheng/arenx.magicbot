@@ -70,14 +70,14 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 		logger.info("[MoveStrategy] set lastLocation to {}", lastLocation);
 
 		if (this.config.containsKey("ignorePokemons.ignorePokemon")) {
-			this.config.configurationsAt("ignorePokemons").forEach(c->{
-				ignorePokemons.add(c.getInt("ignorePokemon"));
+			this.config.getList(Integer.class, "ignorePokemons.ignorePokemon").forEach(i->{
+				ignorePokemons.add(i);
 			});
 		}
 
 		if (this.config.containsKey("searchForPokemons.searchForPokemon")) {
-			this.config.configurationsAt("searchForPokemons").forEach(c->{
-				searchForPokemons.add(c.getInt("searchForPokemon"));
+			this.config.getList(Integer.class, "searchForPokemons.searchForPokemon").forEach(i->{
+				ignorePokemons.add(i);
 			});
 		}
 	}
