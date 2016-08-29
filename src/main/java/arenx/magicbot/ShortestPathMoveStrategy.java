@@ -183,9 +183,9 @@ public class ShortestPathMoveStrategy implements MoveStrategy{
 				boolean searchFor = searchForPokemons.contains(mon.getPokemonId());
 
 				return
+					searchFor ? true :
 					isClass ? true :
-					!isCaptured ? true :
-					searchFor;
+					!isCaptured ? searchPokemonNotInPokeindex : false;
 				})
 			.filter(mon->!ignorePokemons.contains(mon.getPokemonId()))
 			.filter(mon->{
