@@ -541,13 +541,13 @@ public class Bot implements Runnable{
 
 					switch (cf) {
 					case HOPE_TO_CATCH:
-						r = Utils.catchPokemonHard(e.getKey(), go.get());
+						r = Utils.catchPokemonHard(e.getKey());
 						break;
 					case NO_DESIRE:
-						r = Utils.catchPokemonEasy(e.getKey(), go.get());
+						r = Utils.catchPokemonEasy(e.getKey());
 						break;
 					default:
-						r = Utils.catchPokemonHard(e.getKey(), go.get());
+						r = Utils.catchPokemonHard(e.getKey());
 						logger.error("[Pokemon] no action defined for {}", cf);
 						break;
 					}
@@ -667,8 +667,7 @@ public class Bot implements Runnable{
 			try {
 				logger.debug("[Login] username:{} password:{}", account.getUsername(), account.getPassword());
 				cp = new PtcCredentialProvider(httpClient, account.getUsername(), account.getPassword());
-				go = new PokemonGo(httpClient);
-				go.login(cp);
+				go = new PokemonGo(cp, httpClient);
 				break;
 			} catch (AsyncPokemonGoException | LoginFailedException | RemoteServerException e) {
 
