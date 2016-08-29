@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.api.pokemon.PokemonDetails;
+import com.pokegoapi.api.pokemon.PokemonCpUtils;
 import com.pokegoapi.api.pokemon.PokemonMetaRegistry;
 import com.pokegoapi.api.pokemon.PokemonMoveMetaRegistry;
 
@@ -98,7 +98,7 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 					return true;
 				})
 				.filter(mon->{
-					return mon.getPokemonId() != PokemonMetaRegistry.getHightestForFamily(mon.getMeta().getFamily());
+					return mon.getPokemonId() != PokemonMetaRegistry.getHighestForFamily(mon.getMeta().getFamily());
 				})
 				.filter(mon->{
 					int max;
@@ -184,7 +184,7 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 		int max;
 
 		try {
-			max = PokemonDetails.getAbsoluteMaxCp(mon.getPokemonId());
+			max = PokemonCpUtils.getAbsoluteMaxCp(mon.getPokemonId());
 		} catch (Exception e) {
 			logger.error("[SimplePokebankStrategy] no such pokemon "+Utils.getPokemonFullName(mon.getPokemonId().getNumber()), e);
 			return CatchFlavor.HOPE_TO_CATCH;

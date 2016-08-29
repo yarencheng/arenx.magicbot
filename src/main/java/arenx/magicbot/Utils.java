@@ -34,6 +34,7 @@ import com.pokegoapi.api.player.PlayerLevelUpRewards;
 import com.pokegoapi.api.pokemon.EggPokemon;
 import com.pokegoapi.api.pokemon.HatchedEgg;
 import com.pokegoapi.api.pokemon.Pokemon;
+import com.pokegoapi.api.settings.CatchOptions;
 import com.pokegoapi.exceptions.AsyncPokemonGoException;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.NoSuchItemException;
@@ -807,7 +808,7 @@ public class Utils {
 
 	}
 
-	public static CatchResult catchPokemonEasy(CatchablePokemon  mon){
+	public static CatchResult catchPokemonEasy(CatchablePokemon  mon, PokemonGo go){
 		Validate.notNull(mon);
 
 		int maxRetry=5;
@@ -817,7 +818,11 @@ public class Utils {
 			try {
 
 				try {
-					return mon.catchPokemon();
+					return mon.catchPokemon(new CatchOptions(go)
+							.noMasterBall(true)
+							.useBestBall(false)
+							.maxPokeballs(1)
+							.maxRazzberries(0));
 				} catch (AsyncPokemonGoException e) {
 					if (!(e.getCause() instanceof RuntimeException)){
 						throw e;
@@ -865,7 +870,7 @@ public class Utils {
 
 	}
 
-	public static CatchResult catchPokemonHard(CatchablePokemon  mon){
+	public static CatchResult catchPokemonHard(CatchablePokemon  mon, PokemonGo go){
 		Validate.notNull(mon);
 
 		int maxRetry=5;
@@ -875,7 +880,11 @@ public class Utils {
 			try {
 
 				try {
-					return mon.catchPokemonWithBestBall(true, 1, 1);
+					return mon.catchPokemon(new CatchOptions(go)
+							.noMasterBall(true)
+							.useBestBall(true)
+							.maxPokeballs(1)
+							.maxRazzberries(1));
 				} catch (AsyncPokemonGoException e) {
 					if (!(e.getCause() instanceof RuntimeException)){
 						throw e;
