@@ -21,7 +21,6 @@ import com.pokegoapi.api.inventory.EggIncubator;
 import com.pokegoapi.api.inventory.Inventories;
 import com.pokegoapi.api.inventory.ItemBag;
 import com.pokegoapi.api.inventory.PokeBank;
-import com.pokegoapi.api.inventory.Pokeball;
 import com.pokegoapi.api.inventory.Stats;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.FortDetails;
@@ -823,8 +822,7 @@ public class Utils {
 							.noMasterBall(true)
 							.useBestBall(false)
 							.maxPokeballs(1)
-							.maxRazzberries(0)
-							.usePokeball(Pokeball.ULTRABALL));
+							.maxRazzberries(0));
 				} catch (AsyncPokemonGoException e) {
 					if (!(e.getCause() instanceof RuntimeException)){
 						throw e;
@@ -886,8 +884,7 @@ public class Utils {
 							.noMasterBall(true)
 							.useBestBall(true)
 							.maxPokeballs(1)
-							.maxRazzberries(1)
-							.usePokeball(Pokeball.ULTRABALL));
+							.maxRazzberries(1));
 				} catch (AsyncPokemonGoException e) {
 					if (!(e.getCause() instanceof RuntimeException)){
 						throw e;
