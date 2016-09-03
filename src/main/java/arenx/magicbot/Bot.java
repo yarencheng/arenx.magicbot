@@ -302,8 +302,7 @@ public class Bot implements Runnable{
 			case UNRECOGNIZED:
 			case UNSET:
 			default:
-				logger.error("[Bot] Failed to recycle {} {}", quantity, id);
-				System.exit(-1);
+				logger.warn("[Bot] Failed to recycle {} {} {}", quantity, id, r);
 				break;
 
 			}
