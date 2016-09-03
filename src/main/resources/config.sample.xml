@@ -151,7 +151,7 @@
 					
 			<pokemonGroup name="others">
 				<keepPolicy	minCp="60%" skill="NO_MATCH" orderBy="IV" maxNumber="1" />
-				<envolvePolicy minCp="60%" minIv="95%" condition="IV_MORE_THEN_TARGET" />
+				<envolvePolicy minCp="60%" minIv="80%" condition="IV_MORE_THEN_TARGET" />
 				<pokemons>
 					<pokemon number="1" envolveTarget="3"/>
 					<pokemon number="2" envolveTarget="3"/>
