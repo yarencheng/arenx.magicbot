@@ -3,19 +3,22 @@
 	<network>
 		<!-- TODO -->
 	</network>
-	
+
 	<minutesToPlay>30</minutesToPlay>
 	<minutesToRest>90</minutesToRest>
 	<numberOfThread>1</numberOfThread>
 	<loop>true</loop>
 
 	<accounts>
-		<account><username></username><password></password></account>
+		<account>
+			<username></username>
+			<password></password>
+		</account>
 	</accounts>
-	
+
 	<bot>
 	</bot>
-	
+
 	<shortestPathMoveStrategy>
 		<defaultLoaction>
 			<latitude>25.041941</latitude>
@@ -40,9 +43,9 @@
 		<maxPotionToKeep>10</maxPotionToKeep>
 		<maxBerryToKeep>120</maxBerryToKeep>
 	</simpleBackbagStrategy>
-	
+
 	<simplePokemonBankStrategy>
-	
+
 		<!--
 				LEVEL	max CP
 				40		100%
@@ -69,164 +72,214 @@
 				</pokemonGroup>		
 			</pokemonGroups> 
 		-->
-		
-		
+
 		<pokemonGroups>
-		
+
 			<pokemonGroup name="top pokemon">
 				<keepPolicy minCp="60%" skill="NO_MATCH" orderBy="IV" maxNumber="10" />
 				<envolvePolicy condition="NEVER" />
 				<pokemons>
-					<pokemon number="3"/><pokemon number="9"/><pokemon number="40"/>
-					<pokemon number="59"/><pokemon number="62"/><pokemon number="71"/>
-					<pokemon number="89"/><pokemon number="103"/><pokemon number="105"/>
-					<pokemon number="107"/><pokemon number="112"/><pokemon number="113"/>
-					<pokemon number="115"/><pokemon number="126"/><pokemon number="131"/>
-					<pokemon number="132"/><pokemon number="136"/><pokemon number="143"/>
-					<pokemon number="144"/><pokemon number="145"/><pokemon number="146"/>
-					<pokemon number="149"/><pokemon number="150"/><pokemon number="151"/>
+					<pokemon number="3" />
+					<pokemon number="9" />
+					<pokemon number="40" />
+					<pokemon number="59" />
+					<pokemon number="62" />
+					<pokemon number="71" />
+					<pokemon number="89" />
+					<pokemon number="103" />
+					<pokemon number="105" />
+					<pokemon number="107" />
+					<pokemon number="112" />
+					<pokemon number="113" />
+					<pokemon number="115" />
+					<pokemon number="126" />
+					<pokemon number="131" />
+					<pokemon number="132" />
+					<pokemon number="136" />
+					<pokemon number="143" />
+					<pokemon number="144" />
+					<pokemon number="145" />
+					<pokemon number="146" />
+					<pokemon number="149" />
+					<pokemon number="150" />
+					<pokemon number="151" />
 				</pokemons>
 			</pokemonGroup>
-			
+
 			<pokemonGroup name="hightest in family both skill">
 				<keepPolicy minCp="60%" skill="BOTH_MATCH" orderBy="IV" maxNumber="2" />
 				<envolvePolicy condition="NEVER" />
 				<pokemons>
-					<pokemon number="6"/><pokemon number="12"/><pokemon number="15"/>
-					<pokemon number="18"/><pokemon number="26"/><pokemon number="28"/>
-					<pokemon number="31"/><pokemon number="34"/>
-					<pokemon number="38"/><pokemon number="42"/><pokemon number="45"/>
-					<pokemon number="47"/><pokemon number="49"/><pokemon number="51"/>
-					<pokemon number="55"/><pokemon number="57"/>
-					<pokemon number="65"/><pokemon number="68"/><pokemon number="73"/>	
-					<pokemon number="76"/><pokemon number="78"/><pokemon number="80"/>
-					<pokemon number="82"/><pokemon number="87"/><pokemon number="91"/>
-					<pokemon number="94"/><pokemon number="95"/><pokemon number="97"/>
-					<pokemon number="114"/><pokemon number="121"/><pokemon number="122"/>
-					<pokemon number="124"/><pokemon number="125"/><pokemon number="134"/>
-					<pokemon number="135"/><pokemon number="139"/>					
+					<pokemon number="6" />
+					<pokemon number="12" />
+					<pokemon number="15" />
+					<pokemon number="18" />
+					<pokemon number="26" />
+					<pokemon number="28" />
+					<pokemon number="31" />
+					<pokemon number="34" />
+					<pokemon number="38" />
+					<pokemon number="42" />
+					<pokemon number="45" />
+					<pokemon number="47" />
+					<pokemon number="49" />
+					<pokemon number="51" />
+					<pokemon number="55" />
+					<pokemon number="57" />
+					<pokemon number="65" />
+					<pokemon number="68" />
+					<pokemon number="73" />
+					<pokemon number="76" />
+					<pokemon number="78" />
+					<pokemon number="80" />
+					<pokemon number="82" />
+					<pokemon number="87" />
+					<pokemon number="91" />
+					<pokemon number="94" />
+					<pokemon number="95" />
+					<pokemon number="97" />
+					<pokemon number="114" />
+					<pokemon number="121" />
+					<pokemon number="122" />
+					<pokemon number="124" />
+					<pokemon number="125" />
+					<pokemon number="134" />
+					<pokemon number="135" />
+					<pokemon number="139" />
 				</pokemons>
-			</pokemonGroup>	
-			
+			</pokemonGroup>
+
 			<pokemonGroup name="hightest in family skill1">
 				<keepPolicy minCp="60%" skill="SKILL_1_MATCH" orderBy="IV" maxNumber="2" />
 				<envolvePolicy condition="NEVER" />
-				<pokemons>				
-					<pokemon number="53"/><pokemon number="83"/><pokemon number="101"/>
-					<pokemon number="106"/><pokemon number="117"/><pokemon number="128"/>
-					<pokemon number="137"/>
+				<pokemons>
+					<pokemon number="53" />
+					<pokemon number="83" />
+					<pokemon number="101" />
+					<pokemon number="106" />
+					<pokemon number="117" />
+					<pokemon number="128" />
+					<pokemon number="137" />
 				</pokemons>
 			</pokemonGroup>
-			
+
 			<pokemonGroup name="hightest in family skill2">
 				<keepPolicy minCp="60%" skill="SKILL_2_MATCH" orderBy="IV" maxNumber="2" />
 				<envolvePolicy condition="NEVER" />
-				<pokemons>				
-					<pokemon number="20"/><pokemon number="24"/><pokemon number="36"/>
-					<pokemon number="85"/><pokemon number="108"/><pokemon number="110"/>
-					<pokemon number="123"/><pokemon number="127"/><pokemon number="130"/>
-					<pokemon number="141"/>
+				<pokemons>
+					<pokemon number="20" />
+					<pokemon number="24" />
+					<pokemon number="36" />
+					<pokemon number="85" />
+					<pokemon number="108" />
+					<pokemon number="110" />
+					<pokemon number="123" />
+					<pokemon number="127" />
+					<pokemon number="130" />
+					<pokemon number="141" />
 				</pokemons>
 			</pokemonGroup>
-			
+
 			<pokemonGroup name="hightest in family skill no match">
 				<keepPolicy minCp="60%" skill="NO_MATCH" orderBy="IV" maxNumber="2" />
 				<envolvePolicy condition="NEVER" />
-				<pokemons>				
-					<pokemon number="22"/><pokemon number="99"/><pokemon number="119"/>
-					<pokemon number="142"/>	
+				<pokemons>
+					<pokemon number="22" />
+					<pokemon number="99" />
+					<pokemon number="119" />
+					<pokemon number="142" />
 				</pokemons>
 			</pokemonGroup>
-			
+
 			<pokemonGroup name="for experience">
-				<keepPolicy	minCp="60%" skill="NO_MATCH" orderBy="IV" maxNumber="1" />
+				<keepPolicy minCp="60%" skill="NO_MATCH" orderBy="IV" maxNumber="1" />
 				<envolvePolicy minCp="0" minIv="0%" condition="ENOUGH_CANDY" />
 				<pokemons>
-					<pokemon number="10" envolveTarget="11"/>
-					<pokemon number="13" envolveTarget="14"/>
-					<pokemon number="16" envolveTarget="17"/>
+					<pokemon number="10" envolveTarget="11" />
+					<pokemon number="13" envolveTarget="14" />
+					<pokemon number="16" envolveTarget="17" />
 				</pokemons>
-			</pokemonGroup>	
-			
-					
+			</pokemonGroup>
+
+
 			<pokemonGroup name="others">
-				<keepPolicy	minCp="60%" skill="NO_MATCH" orderBy="IV" maxNumber="1" />
+				<keepPolicy minCp="60%" skill="NO_MATCH" orderBy="IV" maxNumber="1" />
 				<envolvePolicy minCp="60%" minIv="80%" condition="IV_MORE_THEN_TARGET" />
 				<pokemons>
-					<pokemon number="1" envolveTarget="3"/>
-					<pokemon number="2" envolveTarget="3"/>
-					<pokemon number="4" envolveTarget="6"/>
-					<pokemon number="5" envolveTarget="6"/>
-					<pokemon number="7" envolveTarget="9"/>
-					<pokemon number="8" envolveTarget="9"/>
-					<pokemon number="11" envolveTarget="12"/>
-					<pokemon number="14" envolveTarget="15"/>
-					<pokemon number="17" envolveTarget="18"/>
-					<pokemon number="19" envolveTarget="20"/>
-					<pokemon number="21" envolveTarget="22"/>
-					<pokemon number="23" envolveTarget="24"/>
-					<pokemon number="25" envolveTarget="26"/>
-					<pokemon number="27" envolveTarget="28"/>
-					<pokemon number="29" envolveTarget="31"/>
-					<pokemon number="30" envolveTarget="31"/>
-					<pokemon number="32" envolveTarget="34"/>
-					<pokemon number="33" envolveTarget="34"/>
-					<pokemon number="35" envolveTarget="36"/>
-					<pokemon number="37" envolveTarget="38"/>
-					<pokemon number="39" envolveTarget="40"/>
-					<pokemon number="41" envolveTarget="42"/>
-					<pokemon number="43" envolveTarget="45"/>
-					<pokemon number="44" envolveTarget="45"/>
-					<pokemon number="46" envolveTarget="47"/>
-					<pokemon number="48" envolveTarget="49"/>
-					<pokemon number="50" envolveTarget="51"/>
-					<pokemon number="52" envolveTarget="53"/>
-					<pokemon number="54" envolveTarget="55"/>
-					<pokemon number="56" envolveTarget="57"/>
-					<pokemon number="58" envolveTarget="59"/>
-					<pokemon number="60" envolveTarget="62"/>
-					<pokemon number="61" envolveTarget="62"/>
-					<pokemon number="63" envolveTarget="65"/>
-					<pokemon number="64" envolveTarget="65"/>
-					<pokemon number="66" envolveTarget="68"/>
-					<pokemon number="67" envolveTarget="68"/>
-					<pokemon number="69" envolveTarget="71"/>
-					<pokemon number="70" envolveTarget="71"/>
-					<pokemon number="72" envolveTarget="73"/>
-					<pokemon number="74" envolveTarget="76"/>
-					<pokemon number="75" envolveTarget="76"/>
-					<pokemon number="77" envolveTarget="78"/>
-					<pokemon number="79" envolveTarget="80"/>
-					<pokemon number="81" envolveTarget="82"/>
-					<pokemon number="84" envolveTarget="85"/>
-					<pokemon number="86" envolveTarget="87"/>
-					<pokemon number="88" envolveTarget="89"/>
-					<pokemon number="90" envolveTarget="91"/>
-					<pokemon number="92" envolveTarget="94"/>
-					<pokemon number="93" envolveTarget="94"/>
-					<pokemon number="96" envolveTarget="97"/>
-					<pokemon number="98" envolveTarget="99"/>
-					<pokemon number="100" envolveTarget="101"/>
-					<pokemon number="102" envolveTarget="103"/>
-					<pokemon number="104" envolveTarget="105"/>
-					<pokemon number="109" envolveTarget="110"/>
-					<pokemon number="111" envolveTarget="112"/>
-					<pokemon number="116" envolveTarget="117"/>
-					<pokemon number="118" envolveTarget="119"/>
-					<pokemon number="120" envolveTarget="121"/>
-					<pokemon number="129" envolveTarget="130"/>
-					<pokemon number="133" envolveTarget="134,135,136"/>
-					<pokemon number="138" envolveTarget="139"/>
-					<pokemon number="140" envolveTarget="141"/>
-					<pokemon number="147" envolveTarget="149"/>
-					<pokemon number="148" envolveTarget="149"/>
-					
+					<pokemon number="1" envolveTarget="3" />
+					<pokemon number="2" envolveTarget="3" />
+					<pokemon number="4" envolveTarget="6" />
+					<pokemon number="5" envolveTarget="6" />
+					<pokemon number="7" envolveTarget="9" />
+					<pokemon number="8" envolveTarget="9" />
+					<pokemon number="11" envolveTarget="12" />
+					<pokemon number="14" envolveTarget="15" />
+					<pokemon number="17" envolveTarget="18" />
+					<pokemon number="19" envolveTarget="20" />
+					<pokemon number="21" envolveTarget="22" />
+					<pokemon number="23" envolveTarget="24" />
+					<pokemon number="25" envolveTarget="26" />
+					<pokemon number="27" envolveTarget="28" />
+					<pokemon number="29" envolveTarget="31" />
+					<pokemon number="30" envolveTarget="31" />
+					<pokemon number="32" envolveTarget="34" />
+					<pokemon number="33" envolveTarget="34" />
+					<pokemon number="35" envolveTarget="36" />
+					<pokemon number="37" envolveTarget="38" />
+					<pokemon number="39" envolveTarget="40" />
+					<pokemon number="41" envolveTarget="42" />
+					<pokemon number="43" envolveTarget="45" />
+					<pokemon number="44" envolveTarget="45" />
+					<pokemon number="46" envolveTarget="47" />
+					<pokemon number="48" envolveTarget="49" />
+					<pokemon number="50" envolveTarget="51" />
+					<pokemon number="52" envolveTarget="53" />
+					<pokemon number="54" envolveTarget="55" />
+					<pokemon number="56" envolveTarget="57" />
+					<pokemon number="58" envolveTarget="59" />
+					<pokemon number="60" envolveTarget="62" />
+					<pokemon number="61" envolveTarget="62" />
+					<pokemon number="63" envolveTarget="65" />
+					<pokemon number="64" envolveTarget="65" />
+					<pokemon number="66" envolveTarget="68" />
+					<pokemon number="67" envolveTarget="68" />
+					<pokemon number="69" envolveTarget="71" />
+					<pokemon number="70" envolveTarget="71" />
+					<pokemon number="72" envolveTarget="73" />
+					<pokemon number="74" envolveTarget="76" />
+					<pokemon number="75" envolveTarget="76" />
+					<pokemon number="77" envolveTarget="78" />
+					<pokemon number="79" envolveTarget="80" />
+					<pokemon number="81" envolveTarget="82" />
+					<pokemon number="84" envolveTarget="85" />
+					<pokemon number="86" envolveTarget="87" />
+					<pokemon number="88" envolveTarget="89" />
+					<pokemon number="90" envolveTarget="91" />
+					<pokemon number="92" envolveTarget="94" />
+					<pokemon number="93" envolveTarget="94" />
+					<pokemon number="96" envolveTarget="97" />
+					<pokemon number="98" envolveTarget="99" />
+					<pokemon number="100" envolveTarget="101" />
+					<pokemon number="102" envolveTarget="103" />
+					<pokemon number="104" envolveTarget="105" />
+					<pokemon number="109" envolveTarget="110" />
+					<pokemon number="111" envolveTarget="112" />
+					<pokemon number="116" envolveTarget="117" />
+					<pokemon number="118" envolveTarget="119" />
+					<pokemon number="120" envolveTarget="121" />
+					<pokemon number="129" envolveTarget="130" />
+					<pokemon number="133" envolveTarget="134,135,136" />
+					<pokemon number="138" envolveTarget="139" />
+					<pokemon number="140" envolveTarget="141" />
+					<pokemon number="147" envolveTarget="149" />
+					<pokemon number="148" envolveTarget="149" />
+
 				</pokemons>
-			</pokemonGroup>	
-			
+			</pokemonGroup>
+
 		</pokemonGroups>
-		
-		
+
+
 	</simplePokemonBankStrategy>
-	
+
 </configuration>
