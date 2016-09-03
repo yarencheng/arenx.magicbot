@@ -588,7 +588,7 @@ public class Bot implements Runnable{
 		pokebankStrategy.getToBeEnvolvePokemons()
 			.forEach(mon->{
 
-				logger.debug("[Pokemon] try to envlove {}", Utils.getPokemonFullName(mon));
+				logger.debug("[Pokemon] try to envlove {} CP:{} IV:{}", Utils.getPokemonFullName(mon), mon.getCp(), mon.getIvRatio());
 
 				EvolutionResult r = Utils.envolvePokemon(mon);
 				Utils.sleep(RandomUtils.nextLong(500, 1500));
@@ -607,7 +607,7 @@ public class Bot implements Runnable{
 					logger.warn("[Pokemon] {} is missing", Utils.getPokemonFullName(mon));
 					break;
 				case SUCCESS:
-					logger.info("[Pokemon] {} is envolved successfully", Utils.getPokemonFullName(mon));
+					logger.info("[Pokemon] {} is envolved successfully. CP:{} IV:{}", Utils.getPokemonFullName(mon), mon.getCp(), mon.getIvRatio());
 					break;
 				case UNRECOGNIZED:
 				case UNSET:
@@ -624,7 +624,7 @@ public class Bot implements Runnable{
 		pokebankStrategy.getToBeTransferedPokemons()
 			.forEach(mon->{
 
-				logger.debug("[Pokemon] try to transfer {}", Utils.getPokemonFullName(mon));
+				logger.debug("[Pokemon] try to transfer {} CP:{} IV:{}", Utils.getPokemonFullName(mon), mon.getCp(), mon.getIvRatio());
 
 				ReleasePokemonResponse.Result r = Utils.transferPokemon(mon);
 				Utils.sleep(RandomUtils.nextLong(500, 1500));
@@ -640,7 +640,7 @@ public class Bot implements Runnable{
 					logger.error("[Pokemon] {} is deployed and can't be trnasferd", Utils.getPokemonFullName(mon));
 					return;
 				case SUCCESS:
-					logger.info("[Pokemon] {} is transferd successfully", Utils.getPokemonFullName(mon));
+					logger.info("[Pokemon] {} is transferd successfully. CP:{} IV:{}", Utils.getPokemonFullName(mon), mon.getCp(), mon.getIvRatio());
 					return;
 				case UNRECOGNIZED:
 				case UNSET:
