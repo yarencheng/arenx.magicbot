@@ -77,9 +77,6 @@ public class SimpleInformationStrategy implements InformationStrategy{
 	public void showStatus() {
 		showExp();
 		updateGoogleSheet();
-
-
-		System.exit(0);
 	}
 
 	private long lastTimeshowExp = 0;
