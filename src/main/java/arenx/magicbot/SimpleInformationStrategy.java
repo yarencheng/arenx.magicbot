@@ -235,7 +235,7 @@ public class SimpleInformationStrategy implements InformationStrategy{
 
 	private void updateGoogleSheet() {
 
-		if (enableGoogleSheet) {
+		if (!enableGoogleSheet) {
 			return;
 		}
 
