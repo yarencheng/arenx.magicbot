@@ -397,8 +397,28 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 						long count = pokemons
 							.stream()
 							.filter(m->m.getMeta().getNumber()==i)
-							.map(m->m.getIvRatio())
-							.filter(iv->mon.getIvRatio()<iv)
+							.filter(m->{
+								double iv = m.getIvRatio();
+								if (iv > mon.getIvRatio()){
+									return true;
+								}else if (iv == mon.getIvRatio()){
+									double cp_mon;
+									double cp_target;
+
+									try {
+										cp_mon = ((double)mon.getCp() * 100 / mon.getAbsoluteMaxCp());
+										cp_target = ((double)m.getCp() * 100 / m.getAbsoluteMaxCp());
+									} catch (Exception e) {
+										logger.warn("failed to get max CP");
+										return false;
+									}
+
+									return cp_mon > cp_target;
+								}else{
+									return false;
+								}
+
+								})
 							.count()
 							;
 						return r.keepPolicy.maxNumber > count;
@@ -502,7 +522,11 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 					.stream()
 					.filter(mon->mon.getMeta().getNumber()==i)
 					.filter(mon->!transferIds.contains(mon.getId()))
-					.sorted((a,b)->Double.compare(b.getIvRatio(), a.getIvRatio()))
+					.sorted((a,b)->{
+						int iv=Double.compare(b.getIvRatio(), a.getIvRatio());
+						int cp = Integer.compare(b.getCp(), a.getCp());
+						return iv!=0 ? iv : cp;
+						})
 					.collect(Collectors.toList()))
 			.filter(list->!list.isEmpty())
 			.filter(list->{
