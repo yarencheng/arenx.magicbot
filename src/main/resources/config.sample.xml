@@ -19,6 +19,10 @@
 	<bot>
 	</bot>
 
+	<simpleInformationStrategy>
+		<googleSheet enable="true" sheet="1om0w9Bbs0uq01p78a8W5GWMcaURXqMgHpiH8-agn8Dg" />
+	</simpleInformationStrategy>
+
 	<shortestPathMoveStrategy>
 		<defaultLoaction>
 			<latitude>25.041941</latitude>

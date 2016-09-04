@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Configuration;
 
 import com.pokegoapi.api.PokemonGo;
 
+import arenx.magicbot.bean.Account;
+
 @Configuration
 @ComponentScan(basePackages={"arenx.magicbot"})
 public class BotConfig {
@@ -32,6 +34,11 @@ public class BotConfig {
 			throw new RuntimeException(m, e);
 		}
 
+	}
+
+	@Bean
+	public AtomicReference<Account> getAccount(){
+		return new AtomicReference<>();
 	}
 
 	@Bean

@@ -1273,11 +1273,11 @@ public class Utils {
 	}
 
 	public static String getPokemonName(CatchablePokemon mon){
-		return getTranslatedPokemonName(mon.getPokemonId().getNumber());
+		return getPokemonName(mon.getPokemonId().getNumber());
 	}
 
 	public static String getPokemonName(Pokemon mon){
-		return getTranslatedPokemonName(mon.getPokemonId().getNumber());
+		return getPokemonName(mon.getPokemonId().getNumber());
 	}
 
 	public static String getPokemonFullName(int number){

@@ -68,8 +68,9 @@ public class Bot implements Runnable{
 	private long startTime;
 	private int minutesToPlay;
 	private int currentLevel;
-	private Account account;
 
+	@Autowired
+	private AtomicReference<Account> account;
 
 	@Autowired
 	private MoveStrategy moveStrategy;
@@ -106,10 +107,11 @@ public class Bot implements Runnable{
 	public void setAccount(Account account){
 		Validate.notNull(account);
 
-		this.account=new Account();
+		Account ac = new Account();
+		ac.setUsername(account.getUsername());
+		ac.setPassword(account.getPassword());
 
-		this.account.setUsername(account.getUsername());
-		this.account.setPassword(account.getPassword());
+		this.account.set(account);
 	}
 
 	@Override
@@ -125,7 +127,7 @@ public class Bot implements Runnable{
 
 	private void startBot(){
 
-		Thread.currentThread().setName(account.getUsername());
+		Thread.currentThread().setName(account.get().getUsername());
 
 		logger.info("[Bot] start");
 
@@ -660,12 +662,12 @@ public class Bot implements Runnable{
 		int maxRetry = 5;
 		int retry = 0;
 
-		logger.info("[Login] start login:{}", account.getUsername());
+		logger.info("[Login] start login:{}", account.get().getUsername());
 
 		while(true){
 			try {
-				logger.debug("[Login] username:{} password:{}", account.getUsername(), account.getPassword());
-				cp = new PtcCredentialProvider(httpClient, account.getUsername(), account.getPassword());
+				logger.debug("[Login] username:{} password:{}", account.get().getUsername(), account.get().getPassword());
+				cp = new PtcCredentialProvider(httpClient, account.get().getUsername(), account.get().getPassword());
 				go = new PokemonGo(cp, httpClient);
 				break;
 			} catch (AsyncPokemonGoException | LoginFailedException | RemoteServerException e) {
