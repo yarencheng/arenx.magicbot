@@ -50,7 +50,7 @@ public class SimpleBackbagStrategy implements BackbagStrategy {
 		List<ItemId> ids_ball = Arrays.asList(ItemId.ITEM_POKE_BALL, ItemId.ITEM_GREAT_BALL, ItemId.ITEM_ULTRA_BALL, ItemId.ITEM_MASTER_BALL);
 		List<ItemId> ids_potion = Arrays.asList(ItemId.ITEM_POTION, ItemId.ITEM_HYPER_POTION, ItemId.ITEM_SUPER_POTION, ItemId.ITEM_MAX_POTION);
 		List<ItemId> ids_berry = Arrays.asList(ItemId.ITEM_RAZZ_BERRY);
-		List<ItemId> ids_revive = Arrays.asList(ItemId.ITEM_REVIVE);
+		List<ItemId> ids_revive = Arrays.asList(ItemId.ITEM_REVIVE, ItemId.ITEM_MAX_REVIVE);
 
 		itemBag.getItems().stream()
 				.filter(item -> !ids_ball.contains(item.getItemId()))
