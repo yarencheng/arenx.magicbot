@@ -138,10 +138,11 @@ public class SimpleInformationStrategy implements InformationStrategy{
 		Stats stats = Utils.getStats(go.get());
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		arrData.add(Arrays.asList("name","level", "exp", "pokestop", "pokemon", "walked(KM)", "last update"));
+		arrData.add(Arrays.asList("name","level", "exp", "pokestop", "pokemon", "walked(KM)", "last update", "location"));
 		arrData.add(Arrays.asList(playerData.getUsername(), stats.getLevel(), stats.getExperience()+"/"+stats.getNextLevelXp(),
 				stats.getPokeStopVisits(), stats.getPokemonsCaptured(), String.format("%.1f", stats.getKmWalked()),
-				format.format(new Date())));
+				format.format(new Date()),
+				"https://www.google.com.tw/maps/@"+go.get().getLatitude()+","+go.get().getLongitude()+",16z?hl=zh-TW"));
 
 		return arrData;
 	}

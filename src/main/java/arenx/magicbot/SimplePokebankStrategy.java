@@ -424,7 +424,9 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 						return r.keepPolicy.maxNumber > count;
 					})
 					.count();
-			}).collect(Collectors.toList())
+			})
+			.filter(mon->!mon.isFavorite())
+			.collect(Collectors.toList())
 			;
 	}
 
@@ -437,6 +439,7 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 		// get pokemons below minimum CP
 		pokemons
 			.stream()
+			.filter(mon->!mon.isFavorite())
 			.filter(mon->{
 				PokemonRule rule = rules.get(mon.getMeta().getNumber());
 				switch(rule.keepPolicy.minCpUnit){
@@ -473,6 +476,7 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 		// get pokemons skill not match
 		pokemons
 			.stream()
+			.filter(mon->!mon.isFavorite())
 			.filter(mon->{
 				PokemonRule rule = rules.get(mon.getMeta().getNumber());
 
@@ -522,6 +526,7 @@ public class SimplePokebankStrategy implements PokebankStrategy{
 					.stream()
 					.filter(mon->mon.getMeta().getNumber()==i)
 					.filter(mon->!transferIds.contains(mon.getId()))
+					.filter(mon->!mon.isFavorite())
 					.sorted((a,b)->{
 						int iv=Double.compare(b.getIvRatio(), a.getIvRatio());
 						int cp = Integer.compare(b.getCp(), a.getCp());
